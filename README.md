@@ -49,11 +49,14 @@ Esto levantará el contenedor de MySQL en el puerto 3306.
 3. Configuración de Base de Datos
 
 Cada microservicio usa Liquibase. No crees tablas manualmente. Al arrancar el servicio por primera vez, las tablas se crearán solas gracias a los archivos en src/main/resources/db/changelog/.
-📦 Microservicios y Responsabilidades
-Servicio	Encargado	Estado
-servicio-estudiantes	Mariano Acevedo	✅ Base Lista
-servicio-profesores	Alvaro	⏳ Pendiente
-servicio-cursos	Felipe	⏳ Pendiente
+Responsabilidades del Equipo
+
+    Servicio Estudiantes: Encargado Mariano (Estado: Base configurada y funcional).
+
+    Servicio Profesores: Encargado Alvaro (Estado: Pendiente de inicio).
+
+    Servicio Cursos: Encargado Felipe (Estado: Pendiente de inicio).
+    
 📐 Flujo de Trabajo (Git)
 
     Siempre hacer git pull origin main antes de empezar a trabajar.
