@@ -2,7 +2,7 @@
 
 Mariano creará el repositorio en la página de GitHub. Una vez creado, les pasará un link. Ustedes abren una terminal y escriben:
 
-git clone https://github.com/usuario/sistema-colegio-backend.git
+git clone https://github.com/NanooDev/sistema-colegio-backend.git
 
 (Esto descarga una copia de todo el proyecto en su PC).
 
