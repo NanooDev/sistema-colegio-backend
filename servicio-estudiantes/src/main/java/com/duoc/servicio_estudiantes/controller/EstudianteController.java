@@ -37,6 +37,24 @@ public class EstudianteController {
         return new ResponseEntity<>(estudianteService.buscarPorId(id), HttpStatus.OK);
     }
 
+    // Endpoint simulado para interactuar con servicio-cursos
+    @GetMapping("/curso/{cursoId}")
+    public ResponseEntity<List<EstudianteDTO>> buscarPorCurso(@PathVariable Long cursoId) {
+        EstudianteDTO e1 = new EstudianteDTO();
+        e1.setId(1);
+        e1.setNombre("Juan");
+        e1.setApellido("Perez");
+        e1.setRut("11.111.111-1");
+
+        EstudianteDTO e2 = new EstudianteDTO();
+        e2.setId(2);
+        e2.setNombre("Maria");
+        e2.setApellido("Gomez");
+        e2.setRut("22.222.222-2");
+
+        return new ResponseEntity<>(List.of(e1, e2), HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<EstudianteDTO> actualizar(@PathVariable Integer id, @Valid @RequestBody EstudianteRequest request) {
         return new ResponseEntity<>(estudianteService.actualizar(id, request), HttpStatus.OK);
