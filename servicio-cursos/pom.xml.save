@@ -1,0 +1,462 @@
+ rm fix*.patch ; cat << 'EOF' > patch.xml
+                <dependencies>
+                        <dependency>
+                                <groupId>org.springframework.cloud</groupId>
+                                <artifactId>spring-cloud-dependencies</artifactId>
+                                <version>${spring-cloud.version}</version>
+                                <type>pom</type>
+                                <scope>import</scope>
+                        </dependency>
+                </dependencies>
+EOF
+sed -i '/<dependencyManagement>/,+5 c\        <dependencyManagement>\n                <dependencies>\n                        <dependency>\n                                <groupId>org.springframework.cloud</groupId>\n                                <artifactId>spring-cloud-dependencies</artifactId>\n                                <version>${spring-cloud.version}</version>\n                                <type>pom</type>\n                                <scope>import</scope>\n                        </dependency>\n                </dependencies>' servicio-cursos/pom.xml
+ cat -n servicio-cursos/pom.xml | sed -n '60,75p'
+ cat << 'EOF' > fixpom.sh
+#!/bin/bash
+cat << 'XML' > temp_pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <parent>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>4.0.6</version>
+                <relativePath/>
+        </parent>
+        <groupId>com.duoc</groupId>
+        <artifactId>servicio-cursos</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <name/>
+        <description/>
+        <url/>
+        <licenses><license/></licenses>
+        <developers><developer/></developers>
+        <scm><connection/><developerConnection/><tag/><url/></scm>
+        <properties>
+                <java.version>21</java.version>
+                <spring-cloud.version>2025.1.1</spring-cloud.version>
+        </properties>
+        <dependencies>
+                <dependency>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-starter-openfeign</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-validation</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-webmvc</artifactId>
+                </dependency>
+                <dependency>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <optional>true</optional>
+                </dependency>
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-validation-test</artifactId>
+                        <scope>test</scope>
+                </dependency>
+                <dependency>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-webmvc-test</artifactId>
+                        <scope>test</scope>
+                </dependency>
+        </dependencies>
+        <dependencyManagement>
+                <dependencies>
+                        <dependency>
+                                <groupId>org.springframework.cloud</groupId>
+                                <artifactId>spring-cloud-dependencies</artifactId>
+                                <version>${spring-cloud.version}</version>
+                                <type>pom</type>
+                                <scope>import</scope>
+                        </dependency>
+                </dependencies>
+        </dependencyManagement>
+        <build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-maven-plugin</artifactId>
+                                <configuration>
+                                        <excludes>
+                                                <exclude>
+                                                        <groupId>org.projectlombok</groupId>
+                                                        <artifactId>lombok</artifactId>
+                                                </exclude>
+                                        </excludes>
+                                </configuration>
+                        </plugin>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <executions>
+                                        <execution>
+                                                <id>default-compile</id>
+                                                <phase>compile</phase>
+                                                <goals><goal>compile</goal></goals>
+                                                <configuration>
+                                                        <annotationProcessorPaths>
+                                                                <path>
+                                                                        <groupId>org.projectlombok</groupId>
+                                                                        <artifactId>lombok</artifactId>
+                                                                </path>
+                                                        </annotationProcessorPaths>
+                                                </configuration>
+                                        </execution>
+                                        <execution>
+                                                <id>default-testCompile</id>
+                                                <phase>test-compile</phase>
+                                                <goals><goal>testCompile</goal></goals>
+                                                <configuration>
+                                                        <annotationProcessorPaths>
+                                                                <path>
+                                                                        <groupId>org.projectlombok</groupId>
+                                                                        <artifactId>lombok</artifactId>
+                                                                </path>
+                                                        </annotationProcessorPaths>
+                                                </configuration>
+                                        </execution>
+                                </executions>
+                        </plugin>
+                </plugins>
+        </build>
+</project>
+XML
+mv temp_pom.xml servicio-cursos/pom.xml
+EOF
+chmod +x fixpom.sh
+./fixpom.sh
+ cat << 'EOF' > /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.6</version>
+		<relativePath/>
+	</parent>
+	<groupId>com.duoc</groupId>
+	<artifactId>servicio-cursos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<java.version>21</java.version>
+		<spring-cloud.version>2025.1.1</spring-cloud.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals><goal>compile</goal></goals>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals><goal>testCompile</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+EOF
+ jobs
+ kill %1 || fg
+ reset ; killall bash
+ echo '<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.6</version>
+		<relativePath/>
+	</parent>
+	<groupId>com.duoc</groupId>
+	<artifactId>servicio-cursos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<java.version>21</java.version>
+		<spring-cloud.version>2025.1.1</spring-cloud.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals><goal>compile</goal></goals>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals><goal>testCompile</goal></goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>' > /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/pom.xml
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ cat -v /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ ss -tuln | grep 8083
+ lsof -t -i:8083 | xargs -r kill -9
+ lsof -i:8083
+ fuser -k 8083/tcp
+ kill -9 $(lsof -t -i:8083) || true
+ netstat -tulnp | grep 8083 || ss -tulnp | grep 8083
+ sed -i 's/server.port=8083/server.port=8084/g' servicio-cursos/src/main/resources/application.properties
+ grep "server.port" /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/target/classes/application.properties
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ echo -e "\nserver.port=8084" >> /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/resources/application.properties
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-estudiantes/src/main/java/com/duoc/servicio_estudiantes/model/Estudiante.java /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-profesores/src/main/java/com/duoc/servicio_profesores/model/Profesor.java /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/java/com/duoc/servicio_cursos/model/Curso.java | grep -E "private String |private Long |private int"
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-profesores/pom.xml | grep jpa
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-profesores/src/main/java/com/duoc/servicio_profesores/controller/ProfesorController.java
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/java/com/duoc/servicio_cursos/model/Profesor.java /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/java/com/duoc/servicio_cursos/dto/ProfesorDTO.java || true
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-cursos/src/main/java/com/duoc/servicio_cursos/dto/ProfesorDTO.java 2>/dev/null
+ cat /home/nanoodev/Escritorio/sistema-colegio-backend/servicio-profesores/src/main/resources/application.properties
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.6</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.duoc</groupId>
+	<artifactId>servicio-cursos</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name/>
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>21</java.version>
+		<spring-cloud.version>2025.1.1</spring-cloud.version>
+	</properties>
+	<dependencies>
+                <dependency>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-starter-openfeign</artifactId>
+                </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+        <dependencyManagement>
+                <dependencies>
+                                <type>pom</type>
+                                <scope>import</scope>
+                        </dependency>
+                </dependencies>
+        </dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<annotationProcessorPaths>
+								<path>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</path>
+							</annotationProcessorPaths>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
