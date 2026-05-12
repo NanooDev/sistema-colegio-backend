@@ -14,4 +14,8 @@ public class Estudiante {
     private String rut;
     private String nombre;
     private String apellido;
+
+    /** Curso al que pertenece (para listados por curso desde servicio-cursos). Opcional. */
+    @Column(name = "curso_id")
+    private Long cursoId;
 }

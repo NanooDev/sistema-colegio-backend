@@ -89,16 +89,17 @@ public class CalificacionesService {
     }
 
     private CalificacionDTO convertirADTO(Calificacion calificacion) {
-        return new CalificacionDTO(
-                calificacion.getId(),
-                calificacion.getEstudianteId(),
-                calificacion.getCursoId(),
-                calificacion.getNota1(),
-                calificacion.getNota2(),
-                calificacion.getNota3(),
-                calificacion.getNotaFinal(),
-                calificacion.getEstado(),
-                calificacion.getFecha()
-        );
+        CalificacionDTO dto = new CalificacionDTO();
+        dto.setCategoria("calificacion");
+        dto.setId(calificacion.getId());
+        dto.setEstudianteId(calificacion.getEstudianteId());
+        dto.setCursoId(calificacion.getCursoId());
+        dto.setNota1(calificacion.getNota1());
+        dto.setNota2(calificacion.getNota2());
+        dto.setNota3(calificacion.getNota3());
+        dto.setNotaFinal(calificacion.getNotaFinal());
+        dto.setEstado(calificacion.getEstado());
+        dto.setFecha(calificacion.getFecha());
+        return dto;
     }
 }

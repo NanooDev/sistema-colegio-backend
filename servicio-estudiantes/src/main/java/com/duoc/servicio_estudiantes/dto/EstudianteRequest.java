@@ -16,4 +16,7 @@ public class EstudianteRequest {
 
     @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
+
+    /** Id del curso en servicio-cursos (opcional). */
+    private Long cursoId;
 }

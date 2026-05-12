@@ -22,6 +22,7 @@ public class EstudianteService {
         estudiante.setRut(request.getRut());
         estudiante.setNombre(request.getNombre());
         estudiante.setApellido(request.getApellido());
+        estudiante.setCursoId(request.getCursoId());
 
         return convertirADTO(estudianteRepository.save(estudiante));
     }
@@ -46,6 +47,7 @@ public class EstudianteService {
         estudianteExistente.setRut(request.getRut());
         estudianteExistente.setNombre(request.getNombre());
         estudianteExistente.setApellido(request.getApellido());
+        estudianteExistente.setCursoId(request.getCursoId());
 
         return convertirADTO(estudianteRepository.save(estudianteExistente));
     }
@@ -55,13 +57,21 @@ public class EstudianteService {
         estudianteRepository.deleteById(id);
     }
 
+    public List<EstudianteDTO> listarPorCurso(Long cursoId) {
+        return estudianteRepository.findByCursoId(cursoId).stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
     private EstudianteDTO convertirADTO(Estudiante estudiante) {
         if (estudiante == null) return null;
         EstudianteDTO dto = new EstudianteDTO();
+        dto.setCategoria("estudiante");
         dto.setId(estudiante.getId());
-        dto.setRut(estudiante.getRut());
         dto.setNombre(estudiante.getNombre());
         dto.setApellido(estudiante.getApellido());
+        dto.setRut(estudiante.getRut());
+        dto.setCursoId(estudiante.getCursoId());
         return dto;
     }
 }

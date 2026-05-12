@@ -1,15 +1,16 @@
 package com.duoc.servicio_calificaciones.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonPropertyOrder({ "categoria", "id", "estudianteId", "cursoId", "nota1", "nota2", "nota3", "notaFinal", "estado", "fecha" })
 public class CalificacionDTO {
+
+    private String categoria = "calificacion";
+
     private Integer id;
     private Integer estudianteId;
     private Integer cursoId;

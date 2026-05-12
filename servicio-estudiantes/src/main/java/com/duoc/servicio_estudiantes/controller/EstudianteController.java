@@ -37,22 +37,11 @@ public class EstudianteController {
         return new ResponseEntity<>(estudianteService.buscarPorId(id), HttpStatus.OK);
     }
 
-    // Endpoint simulado para interactuar con servicio-cursos
+    /** Estudiantes asignados a un curso (campo curso_id en BD). Usado por servicio-cursos vía Feign. */
     @GetMapping("/curso/{cursoId}")
     public ResponseEntity<List<EstudianteDTO>> buscarPorCurso(@PathVariable Long cursoId) {
-        EstudianteDTO e1 = new EstudianteDTO();
-        e1.setId(1);
-        e1.setNombre("Juan");
-        e1.setApellido("Perez");
-        e1.setRut("11.111.111-1");
-
-        EstudianteDTO e2 = new EstudianteDTO();
-        e2.setId(2);
-        e2.setNombre("Maria");
-        e2.setApellido("Gomez");
-        e2.setRut("22.222.222-2");
-
-        return new ResponseEntity<>(List.of(e1, e2), HttpStatus.OK);
+        List<EstudianteDTO> lista = estudianteService.listarPorCurso(cursoId);
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

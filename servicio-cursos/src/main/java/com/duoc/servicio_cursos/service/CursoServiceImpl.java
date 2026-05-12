@@ -2,12 +2,21 @@ package com.duoc.servicio_cursos.service;
 
 import com.duoc.servicio_cursos.client.EstudianteFeign;
 import com.duoc.servicio_cursos.client.ProfesorFeign;
+import com.duoc.servicio_cursos.dto.CursoCreateRequest;
+import com.duoc.servicio_cursos.entity.CursoEntity;
+import com.duoc.servicio_cursos.exception.CursoNotFoundException;
 import com.duoc.servicio_cursos.model.Curso;
+import com.duoc.servicio_cursos.repository.CursoEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CursoServiceImpl implements CursoService {
+
+    @Autowired
+    private CursoEntityRepository cursoEntityRepository;
 
     @Autowired
     private ProfesorFeign profesorFeign;
@@ -16,30 +25,62 @@ public class CursoServiceImpl implements CursoService {
     private EstudianteFeign estudianteFeign;
 
     @Override
+    public List<Curso> listarCursos() {
+        return cursoEntityRepository.findAll().stream()
+                .map(this::mapEntityToModel)
+                .toList();
+    }
+
+    @Override
+    public Curso crear(CursoCreateRequest request) {
+        CursoEntity entity = new CursoEntity();
+        entity.setNombre(request.getNombre());
+        entity.setProfesorJefeId(request.getProfesorJefeId());
+        return mapEntityToModel(cursoEntityRepository.save(entity));
+    }
+
+    @Override
+    public Curso actualizar(Long id, CursoCreateRequest request) {
+        CursoEntity entity = cursoEntityRepository.findById(id)
+                .orElseThrow(() -> new CursoNotFoundException(id));
+        entity.setNombre(request.getNombre());
+        entity.setProfesorJefeId(request.getProfesorJefeId());
+        return mapEntityToModel(cursoEntityRepository.save(entity));
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        CursoEntity entity = cursoEntityRepository.findById(id)
+                .orElseThrow(() -> new CursoNotFoundException(id));
+        cursoEntityRepository.delete(entity);
+    }
+
+    @Override
     public Curso obtenerCursoConDetalles(Long id) {
-        // En un caso real buscarías el curso en la BD del servicio de cursos.
-        // Aquí hacemos una simulación para tu profesor:
+        CursoEntity entity = cursoEntityRepository.findById(id)
+                .orElseThrow(() -> new CursoNotFoundException(id));
+        Curso curso = mapEntityToModel(entity);
+
+        try {
+            curso.setProfesorJefe(profesorFeign.obtenerProfesorPorId(curso.getProfesorJefeId()));
+        } catch (Exception e) {
+            System.err.println("No se pudo obtener el profesor: " + e.getMessage());
+        }
+
+        try {
+            curso.setEstudiantes(estudianteFeign.obtenerEstudiantesPorCurso(curso.getId()));
+        } catch (Exception e) {
+            System.err.println("No se pudo obtener los estudiantes: " + e.getMessage());
+        }
+
+        return curso;
+    }
+
+    private Curso mapEntityToModel(CursoEntity entity) {
         Curso curso = new Curso();
-        curso.setId(id);
-        curso.setNombre("Matemáticas Avanzadas");
-        curso.setProfesorJefeId(1L);
-
-        // Consume el servicio de Profesores usando Feign
-        try {
-            var profesor = profesorFeign.obtenerProfesorPorId(curso.getProfesorJefeId());
-            curso.setProfesorJefe(profesor);
-        } catch (Exception e) {
-            System.err.println("No se pudo obtener el profesor");
-        }
-
-        // Consume el servicio de Estudiantes usando Feign
-        try {
-            var estudiantes = estudianteFeign.obtenerEstudiantesPorCurso(curso.getId());
-            curso.setEstudiantes(estudiantes);
-        } catch (Exception e) {
-            System.err.println("No se pudo obtener los estudiantes");
-        }
-
+        curso.setId(entity.getId());
+        curso.setNombre(entity.getNombre());
+        curso.setProfesorJefeId(entity.getProfesorJefeId());
         return curso;
     }
 }
