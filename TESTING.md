@@ -53,7 +53,7 @@ Ahora que tenemos un curso, podemos matricular (crear) estudiantes y asociarlos 
 * **Body (JSON):**
 ```json
 {
-  "rut": "20.123.456-7",
+  "rut": "20123456-7",
   "nombre": "Mariano",
   "apellido": "González",
   "cursoId": 1
@@ -66,7 +66,7 @@ Ahora que tenemos un curso, podemos matricular (crear) estudiantes y asociarlos 
 * **Body (JSON):**
 ```json
 {
-  "rut": "21.987.654-3",
+  "rut": "21987654-3",
   "nombre": "Álvaro",
   "apellido": "Muñoz",
   "cursoId": 1
@@ -100,14 +100,14 @@ Postman debería devolverte un JSON grande donde el microservicio juntó la info
   "estudiantes": [
     {
       "id": 1,
-      "rut": "20.123.456-7",
+      "rut": "20123456-7",
       "nombre": "Mariano",
       "apellido": "González",
       "cursoId": 1
     },
     {
       "id": 2,
-      "rut": "21.987.654-3",
+      "rut": "21987654-3",
       "nombre": "Álvaro",
       "apellido": "Muñoz",
       "cursoId": 1
