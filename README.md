@@ -108,3 +108,6 @@ En GitHub, usa el botón **"Compare & pull request"**. Un encargado debe revisar
 - **Servicio Profesores**: Alvaro
 - **Servicio Cursos**: Felipe
 - (Otros servicios en desarrollo: *Asignaturas, Asistencias, Biblioteca, Calificaciones, Finanzas, Matriculas, Notificaciones*).
+
+## 🧪 Pruebas con Postman
+Si deseas probar la comunicación real entre los microservicios, consulta: [Guía de Pruebas de API (TESTING.md)](TESTING.md).
