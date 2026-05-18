@@ -10,4 +10,5 @@ import java.util.List;
 public interface EstudianteRepository extends JpaRepository<Estudiante, Integer> {
 
     List<Estudiante> findByCursoId(Long cursoId);
+    boolean existsByRut(String rut);
 }

@@ -8,7 +8,7 @@ import lombok.Data;
 public class EstudianteRequest {
 
     @NotBlank(message = "El RUT es obligatorio")
-    @Pattern(regexp = "^[0-9]+-[0-9kK]{1}$", message = "El RUT debe tener formato valido (e.g., 12345678-9)")
+    @Pattern(regexp = "^[0-9]+-[0-9kK]{1}$", message = "El RUT debe tener formato valido (12345678-9)")
     private String rut;
 
     @NotBlank(message = "El nombre es obligatorio")
@@ -17,6 +17,6 @@ public class EstudianteRequest {
     @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
-    /** Id del curso en servicio-cursos (opcional). */
+    //Id del curso en servicio-cursos (opcional).
     private Long cursoId;
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 @JsonPropertyOrder({ "categoria", "id", "nombre", "apellido", "rut", "cursoId" })
 public class EstudianteDTO {
 
-    /** Siempre "estudiante" para identificar el tipo de recurso en APIs y agregados (p. ej. curso). */
+    //Siempre "estudiante" para identificar el tipo de recurso en APIs y agregados (ej curso).
     private String categoria = "estudiante";
 
     private Integer id;

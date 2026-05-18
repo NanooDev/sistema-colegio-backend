@@ -16,8 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                errores.put(error.getField(), error.getDefaultMessage())
-        );
+                errores.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errores);
     }
 
@@ -26,5 +25,19 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(CursoNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCursoNotFound(CursoNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(EstudianteDuplicadoException.class)
+    public ResponseEntity<Map<String, String>> handleEstudianteDuplicado(EstudianteDuplicadoException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

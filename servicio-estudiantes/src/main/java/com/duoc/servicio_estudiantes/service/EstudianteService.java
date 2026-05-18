@@ -2,6 +2,7 @@ package com.duoc.servicio_estudiantes.service;
 
 import com.duoc.servicio_estudiantes.dto.EstudianteDTO;
 import com.duoc.servicio_estudiantes.dto.EstudianteRequest;
+import com.duoc.servicio_estudiantes.exception.EstudianteDuplicadoException;
 import com.duoc.servicio_estudiantes.exception.EstudianteNotFoundException;
 import com.duoc.servicio_estudiantes.model.Estudiante;
 import com.duoc.servicio_estudiantes.repository.EstudianteRepository;
@@ -18,6 +19,10 @@ public class EstudianteService {
     private EstudianteRepository estudianteRepository;
 
     public EstudianteDTO guardar(EstudianteRequest request) {
+        if (estudianteRepository.existsByRut(request.getRut())) {
+            throw new EstudianteDuplicadoException(request.getRut());
+        }
+
         Estudiante estudiante = new Estudiante();
         estudiante.setRut(request.getRut());
         estudiante.setNombre(request.getNombre());
