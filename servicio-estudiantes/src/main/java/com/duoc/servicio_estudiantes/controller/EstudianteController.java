@@ -37,7 +37,7 @@ public class EstudianteController {
         return new ResponseEntity<>(estudianteService.buscarPorId(id), HttpStatus.OK);
     }
 
-    /** Estudiantes asignados a un curso (campo curso_id en BD). Usado por servicio-cursos vía Feign. */
+    // Estudiantes asignados a un curso (campo curso_id en BD). Usado por servicio-cursos en Feign.
     @GetMapping("/curso/{cursoId}")
     public ResponseEntity<List<EstudianteDTO>> buscarPorCurso(@PathVariable Long cursoId) {
         List<EstudianteDTO> lista = estudianteService.listarPorCurso(cursoId);
