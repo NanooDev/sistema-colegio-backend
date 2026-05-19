@@ -117,3 +117,61 @@ Postman debería devolverte un JSON grande donde el microservicio juntó la info
 ```
 
 > **🎉 Si ves esto:** ¡Felicidades! Significa que **los 3 microservicios** (Cursos, Profesores y Estudiantes) están conectados exitosamente a la base de datos de Docker y además **están comunicándose internamente entre ellos**.
+
+---
+
+## 🚫 5. Pruebas de Control de Errores (Casos Negativos)
+Para verificar que el sistema es robusto, debemos provocar errores intencionalmente y comprobar que la API devuelve los mensajes de error configurados (códigos 400 Bad Request, 404 Not Found y 409 Conflict), sin "romperse" ni devolver errores genéricos internos (como un 500).
+
+### 5.1. Intentar registrar un Estudiante con un RUT que ya existe (Conflicto)
+* **Método:** `POST`
+* **URL:** `http://localhost:8081/api/v1/estudiantes`
+* **Body:** Usa el mismo JSON de "Mariano" (RUT `20123456-7`) que ya registraste en el Paso 3.
+* **Resultado Esperado:** 
+  * Status: `409 Conflict`
+  * Body devuelto: 
+    ```json
+    {
+      "error": "Ya existe un estudiante con el RUT: 20123456-7"
+    }
+    ```
+
+### 5.2. Intentar registrar un Estudiante con formato de RUT inválido (Validación)
+* **Método:** `POST`
+* **URL:** `http://localhost:8081/api/v1/estudiantes`
+* **Body:** 
+```json
+{
+  "rut": "20.123.456-7", 
+  "nombre": "Prueba",
+  "apellido": "Error",
+  "cursoId": 1
+}
+```
+*(También puedes probar enviando el "rut" o "nombre" completamente en blando: `""`)*
+* **Resultado Esperado:**
+  * Status: `400 Bad Request`
+  * Body devuelto:
+    ```json
+    {
+      "rut": "El RUT debe tener formato valido (12345678-9)"
+    }
+    ```
+
+### 5.3. Generar un Get (Buscar) de un objeto que no existe en Base de datos (Not Found)
+* **Método:** `GET`
+* **URL:** `http://localhost:8081/api/v1/estudiantes/999` (Asumiendo que el ID 999 no existe)
+* **Resultado Esperado:**
+  * Status: `404 Not Found`
+  * Body devuelto:
+    ```json
+    {
+      "error": "Estudiante no encontrado con id: 999"
+    }
+    ```
+*(Puedes replicar esto mismo para Cursos y Profesores usando las URL respectivas y comprobando que devuelvan el JSON del error controlado).*
+
+---
+**Nota sobre validación exhaustiva entre Microservicios (Feign):**
+En un entorno avanzado, si se ingresa un estudiante a un `cursoId` que a su vez no existe (como `cursoId: 99`), el `servicio-estudiantes` debería conectarse por interfaz Feign Client hacia `servicio-cursos` para comprobar la existencia del curso antes de matricular. Actualmente el sistema confía en la ID entregada y `servicio-cursos` se encarga de acoplarlo con el GET Principal. Esto es normal en arquitecturas de primer nivel de escolaridad.
+
