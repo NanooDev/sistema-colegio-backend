@@ -1,0 +1,103 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: ${APP_PROFILE:dev}
+
+  cloud:
+    gateway:
+      default-filters:
+        - PreserveHostHeader
+      routes:
+        - id: estudiantes
+          uri: ${SERVICIO_ESTUDIANTES_URL:http://localhost:8081}
+          predicates:
+            - Path=/gateway/estudiantes/**
+          filters:
+            - StripPrefix=2
+
+        - id: profesores
+          uri: ${SERVICIO_PROFESORES_URL:http://localhost:8082}
+          predicates:
+            - Path=/gateway/profesores/**
+          filters:
+            - StripPrefix=2
+
+        - id: asistencias
+          uri: ${SERVICIO_ASISTENCIAS_URL:http://localhost:8083}
+          predicates:
+            - Path=/gateway/asistencias/**
+          filters:
+            - StripPrefix=2
+
+        - id: cursos
+          uri: ${SERVICIO_CURSOS_URL:http://localhost:8084}
+          predicates:
+            - Path=/gateway/cursos/**
+          filters:
+            - StripPrefix=2
+
+        - id: asignaturas
+          uri: ${SERVICIO_ASIGNATURAS_URL:http://localhost:8085}
+          predicates:
+            - Path=/gateway/asignaturas/**
+          filters:
+            - StripPrefix=2
+
+        - id: matriculas
+          uri: ${SERVICIO_MATRICULAS_URL:http://localhost:8086}
+          predicates:
+            - Path=/gateway/matriculas/**
+          filters:
+            - StripPrefix=2
+
+        - id: biblioteca
+          uri: ${SERVICIO_BIBLIOTECA_URL:http://localhost:8087}
+          predicates:
+            - Path=/gateway/biblioteca/**
+          filters:
+            - StripPrefix=2
+
+        - id: finanzas
+          uri: ${SERVICIO_FINANZAS_URL:http://localhost:8088}
+          predicates:
+            - Path=/gateway/finanzas/**
+          filters:
+            - StripPrefix=2
+
+        - id: notificaciones
+          uri: ${SERVICIO_NOTIFICACIONES_URL:http://localhost:8089}
+          predicates:
+            - Path=/gateway/notificaciones/**
+          filters:
+            - StripPrefix=2
+
+        - id: calificaciones
+          uri: ${SERVICIO_CALIFICACIONES_URL:http://localhost:8095}
+          predicates:
+            - Path=/gateway/calificaciones/**
+          filters:
+            - StripPrefix=2
+
+server:
+  port: ${GATEWAY_PORT:8090}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui.html
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: INFO

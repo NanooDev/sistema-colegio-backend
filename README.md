@@ -65,6 +65,37 @@ cd servicio-estudiantes
 
 >**IMPORTANTE**: Debes repetir este paso para cada microservicio que desees levantar (ej. `servicio-profesores`, `servicio-cursos`, etc.) en *terminales distintas*. Asegúrate de que cada servicio esté configurado (en su `application.properties`/`yml`) para correr en **puertos diferentes** (ej: 8081, 8082...), de lo contrario, chocarán y dará error.
 
+### 3.1 Ejecutar API Gateway (requerido para evaluación 3)
+Se agregó un gateway en `api-gateway` para centralizar el enrutamiento de los microservicios.
+
+**Windows:**
+```cmd
+cd api-gateway
+..\servicio-estudiantes\mvnw.cmd spring-boot:run
+```
+
+**Linux / Mac:**
+```bash
+cd api-gateway
+../servicio-estudiantes/mvnw spring-boot:run
+```
+
+Gateway URL base: `http://localhost:8090`
+
+Ejemplo de consumo por gateway:
+- `http://localhost:8090/gateway/estudiantes/api/v1/estudiantes`
+- `http://localhost:8090/gateway/profesores/api/profesores`
+
+Swagger del gateway:
+- `http://localhost:8090/doc/swagger-ui.html`
+
+### 3.2 Logs de aplicación y acceso HTTP
+Cada microservicio genera:
+- Log de aplicación en `logs/<spring.application.name>.log`
+- Log de acceso HTTP en `logs/<spring.application.name>-access.log`
+
+Esto deja evidencia trazable para defensa técnica (errores, requests, códigos HTTP y tiempos de respuesta).
+
 ### 4. Configuración de Base de Datos y Creación de Tablas
 El sistema debería crear automáticamente las tablas iniciales al arrancar cada microservicio (gracias a Hibernate/JPA o Liquibase). NO necesitas crear bases de datos ni tablas manualmente.
 
@@ -108,6 +139,7 @@ En GitHub, usa el botón **"Compare & pull request"**. Un encargado debe revisar
 - **Servicio Profesores**: Alvaro
 - **Servicio Cursos**: Felipe
 - (Otros servicios en desarrollo: *Asignaturas, Asistencias, Biblioteca, Calificaciones, Finanzas, Matriculas, Notificaciones*).
+- **API Gateway**: `api-gateway` (puerto 8090)
 
 ## 🧪 Pruebas con Postman
 Si deseas probar la comunicación real entre los microservicios, consulta: [Guía de Pruebas de API (TESTING.md)](TESTING.md).
