@@ -69,6 +69,31 @@ class EstudianteServiceTest {
     }
 
     @Test
+    void listar_deberiaRetornarTodosLosEstudiantes() {
+        Estudiante primero = new Estudiante();
+        primero.setId(1);
+        primero.setRut("11111111-1");
+        primero.setNombre("Ana");
+        primero.setApellido("Pérez");
+        primero.setCursoId(10L);
+
+        Estudiante segundo = new Estudiante();
+        segundo.setId(2);
+        segundo.setRut("22222222-2");
+        segundo.setNombre("Luis");
+        segundo.setApellido("González");
+        segundo.setCursoId(11L);
+
+        when(estudianteRepository.findAll()).thenReturn(List.of(primero, segundo));
+
+        List<EstudianteDTO> result = estudianteService.listar();
+
+        assertEquals(2, result.size());
+        assertEquals("Ana", result.get(0).getNombre());
+        assertEquals("Luis", result.get(1).getNombre());
+    }
+
+    @Test
     void buscarPorId_deberiaLanzarExcepcion_siNoExiste() {
         when(estudianteRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -92,6 +117,61 @@ class EstudianteServiceTest {
         assertEquals("Luis", result.getNombre());
         assertEquals("González", result.getApellido());
         assertEquals(2L, result.getCursoId());
+    }
+
+    @Test
+    void actualizar_deberiaActualizarYRetornarDTO_siExiste() {
+        Estudiante existente = new Estudiante();
+        existente.setId(3);
+        existente.setRut("33333333-3");
+        existente.setNombre("Maria");
+        existente.setApellido("Lopez");
+        existente.setCursoId(4L);
+
+        EstudianteRequest request = new EstudianteRequest();
+        request.setRut("44444444-4");
+        request.setNombre("María");
+        request.setApellido("López");
+        request.setCursoId(8L);
+
+        Estudiante actualizado = new Estudiante();
+        actualizado.setId(3);
+        actualizado.setRut(request.getRut());
+        actualizado.setNombre(request.getNombre());
+        actualizado.setApellido(request.getApellido());
+        actualizado.setCursoId(request.getCursoId());
+
+        when(estudianteRepository.findById(3)).thenReturn(Optional.of(existente));
+        when(estudianteRepository.save(any(Estudiante.class))).thenReturn(actualizado);
+
+        EstudianteDTO result = estudianteService.actualizar(3, request);
+
+        assertEquals(3, result.getId());
+        assertEquals("44444444-4", result.getRut());
+        assertEquals("María", result.getNombre());
+        assertEquals("López", result.getApellido());
+        assertEquals(8L, result.getCursoId());
+        verify(estudianteRepository).save(existente);
+    }
+
+    @Test
+    void eliminar_deberiaBorrarSiExiste() {
+        Estudiante existente = new Estudiante();
+        existente.setId(12);
+
+        when(estudianteRepository.findById(12)).thenReturn(Optional.of(existente));
+
+        estudianteService.eliminar(12);
+
+        verify(estudianteRepository).deleteById(12);
+    }
+
+    @Test
+    void eliminar_deberiaLanzarExcepcionSiNoExiste() {
+        when(estudianteRepository.findById(12)).thenReturn(Optional.empty());
+
+        assertThrows(EstudianteNotFoundException.class, () -> estudianteService.eliminar(12));
+        verify(estudianteRepository, never()).deleteById(anyInt());
     }
 
     @Test
