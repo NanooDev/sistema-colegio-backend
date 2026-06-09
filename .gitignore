@@ -9,6 +9,3 @@ target/
 
 # Ignorar archivos temporales
 *.log
-
-# Ignorar carpetas de logs generadas por los servicios (runtime)
-**/logs/
