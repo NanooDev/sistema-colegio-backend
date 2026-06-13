@@ -4,16 +4,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        log.error("Error: {}", ex.getMessage());
         Map<String, String> errores = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errores.put(error.getField(), error.getDefaultMessage()));
@@ -22,6 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EstudianteNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(EstudianteNotFoundException ex) {
+        log.error("Error: {}", ex.getMessage());
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -29,6 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CursoNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCursoNotFound(CursoNotFoundException ex) {
+        log.error("Error: {}", ex.getMessage());
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -36,6 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EstudianteDuplicadoException.class)
     public ResponseEntity<Map<String, String>> handleEstudianteDuplicado(EstudianteDuplicadoException ex) {
+        log.error("Error: {}", ex.getMessage());
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
