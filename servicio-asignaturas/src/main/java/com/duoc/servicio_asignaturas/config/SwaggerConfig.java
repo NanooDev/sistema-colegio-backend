@@ -15,8 +15,6 @@ public class SwaggerConfig {
                         .title("API Servicio Asignaturas")
                         .description("API para el microservicio de Asignaturas")
                         .version("v1.0.0")
-                        .contact(new Contact()
-                                .name("DUOC UC - Fullstack I")
-                                .url("https://www.duoc.cl")));
+                        );
     }
 }
