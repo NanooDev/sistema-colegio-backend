@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  mysql-colegio:
+    image: mysql:8.0
+    container_name: mysql-colegio
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  eureka:
+    build: ./eureka
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    restart: always
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+      - SERVICIO_ESTUDIANTES_URL=http://servicio-estudiantes:8081
+      - SERVICIO_PROFESORES_URL=http://servicio-profesores:8082
+      - SERVICIO_ASISTENCIAS_URL=http://servicio-asistencias:8083
+      - SERVICIO_CURSOS_URL=http://servicio-cursos:8084
+      - SERVICIO_ASIGNATURAS_URL=http://servicio-asignaturas:8085
+      - SERVICIO_MATRICULAS_URL=http://servicio-matriculas:8086
+      - SERVICIO_BIBLIOTECA_URL=http://servicio-biblioteca:8087
+      - SERVICIO_FINANZAS_URL=http://servicio-finanzas:8088
+      - SERVICIO_NOTIFICACIONES_URL=http://servicio-notificaciones:8089
+      - SERVICIO_CALIFICACIONES_URL=http://servicio-calificaciones:8095
+    depends_on:
+      - eureka
+
+  servicio-estudiantes:
+    build: ./servicio-estudiantes
+    container_name: servicio-estudiantes
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_estudiantes?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-profesores:
+    build: ./servicio-profesores
+    container_name: servicio-profesores
+    ports:
+      - "8082:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-asistencias:
+    build: ./servicio-asistencias
+    container_name: servicio-asistencias
+    ports:
+      - "8083:8083"
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_asistencias?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-cursos:
+    build: ./servicio-cursos
+    container_name: servicio-cursos
+    ports:
+      - "8084:8084"
+    environment:
+      - SERVER_PORT=8084
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_cursos?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-asignaturas:
+    build: ./servicio-asignaturas
+    container_name: servicio-asignaturas
+    ports:
+      - "8085:8085"
+    environment:
+      - SERVER_PORT=8085
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_asignaturas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-matriculas:
+    build: ./servicio-matriculas
+    container_name: servicio-matriculas
+    ports:
+      - "8086:8086"
+    environment:
+      - SERVER_PORT=8086
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_matriculas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-biblioteca:
+    build: ./servicio-biblioteca
+    container_name: servicio-biblioteca
+    ports:
+      - "8087:8087"
+    environment:
+      - SERVER_PORT=8087
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_biblioteca?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-finanzas:
+    build: ./servicio-finanzas
+    container_name: servicio-finanzas
+    ports:
+      - "8088:8088"
+    environment:
+      - SERVER_PORT=8088
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_finanzas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-notificaciones:
+    build: ./servicio-notificaciones
+    container_name: servicio-notificaciones
+    ports:
+      - "8089:8089"
+    environment:
+      - SERVER_PORT=8089
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+  servicio-calificaciones:
+    build: ./servicio-calificaciones
+    container_name: servicio-calificaciones
+    ports:
+      - "8095:8095"
+    environment:
+      - SERVER_PORT=8095
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_calificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka:8761/eureka/
+    depends_on:
+      - mysql-colegio
+      - eureka
+
+volumes:
+  mysql_data:

@@ -44,8 +44,19 @@ Antes de ejecutar cualquier microservicio, la base de datos debe estar corriendo
 
 *(Nota: Esto levantará el contenedor de MySQL en el puerto 3306 usando como contraseña root `root`. Los datos persistirán localmente en las carpetas `datos_mysql`).*
 
-### 3. Ejecutar los Microservicios
-El sistema está compuesto por múltiples servicios independientes. Debes levantar los que necesites probar. 
+### 3. Ejecutar TODO el sistema (Recomendado para Evaluación 3)
+Si deseas levantar todos los microservicios, la base de datos, Eureka y el Gateway con un solo comando:
+
+1. Asegúrate de que no haya otros servicios ocupando el puerto 3306 (detener MySQL local si existe).
+2. Ve a la raíz del proyecto (`sistema-colegio-backend`).
+3. Ejecuta:
+   ```bash
+   docker compose up -d --build
+   ```
+*(Nota: Esto construirá las imágenes de todos los servicios y los levantará. Ten en cuenta que requiere una buena cantidad de memoria RAM. Puedes ver el estado de todo en Docker Desktop o con `docker ps`).*
+
+### 4. Ejecutar Microservicios Individualmente
+El sistema está compuesto por múltiples servicios independientes...
 
 Dado que usamos el _wrapper_ de Maven (`mvnw`), **no necesitas instalar Maven en tu PC**. 
 
