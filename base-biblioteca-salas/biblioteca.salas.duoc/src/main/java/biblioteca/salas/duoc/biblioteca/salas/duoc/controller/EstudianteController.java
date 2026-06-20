@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/estudiantes")
+@RequestMapping("/api/v1/estudiantes")
 @Tag(name = "Estudiantes", description = "Operaciones relacionadas con los estudiantes")
 public class EstudianteController {
     @Autowired

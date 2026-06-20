@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/carreras")
+@RequestMapping("/api/v1/carreras")
 @Tag(name = "Carreras", description = "Operaciones relacionadas con las carreras")
 public class CarreraController {
     @Autowired

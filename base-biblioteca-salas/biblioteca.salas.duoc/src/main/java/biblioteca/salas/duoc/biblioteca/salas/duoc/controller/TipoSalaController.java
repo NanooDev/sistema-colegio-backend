@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tipo-salas")
+@RequestMapping("/api/v1/tipo-salas")
 @Tag(name = "Tipo de Salas", description = "Operaciones relacionadas con los tipos de salas")
 public class TipoSalaController {
     @Autowired
