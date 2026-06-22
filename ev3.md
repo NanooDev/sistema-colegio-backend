@@ -1,58 +1,111 @@
 # Sistema Colegio Backend - Evaluación 3 (EV3)
 
-Este documento detalla todas las integraciones, correcciones y mejoras aplicadas en el proyecto para asegurar que la arquitectura de microservicios funcione correctamente de manera local a través de Docker Compose, incluyendo instrucciones detalladas para su levantamiento tanto en Linux como en Windows.
-
-## 🚀 Mejoras e Integraciones Realizadas
-
-1. **Refactorización del API Gateway:**
-   - Se migró la configuración de rutas de YAML (`application.yml`) a una **configuración programática en Java** (`GatewayConfig.java`). Esto soluciona problemas de compatibilidad y parseo en las nuevas versiones de Spring Cloud Gateway WebFlux, asegurando que los predicados de ruta y el filtro `StripPrefix=2` se apliquen correctamente.
-   - Se añadió correctamente el cliente de Eureka (`spring-cloud-starter-netflix-eureka-client`) al Gateway para que se registre en el panel centralizadoizado.
-
-2. **Sincronización con Eureka:**
-   - Se corrigió la propiedad de conexión a Eureka en los 10 microservicios. Se encontraba escrita erróneamente con guión (`eureka.client-service-url.defaultZone`), lo que ocasionaba que los servicios intentaran conectarse a su propio `localhost`. Se corrigió por la propiedad oficial de Spring: `eureka.client.service-url.defaultZone`.
-
-3. **Resolución de problemas con Flyway y JPA en `servicio-calificaciones`:**
-   - Hibernate intentaba validar las entidades de base de datos antes de que Flyway tuviera la oportunidad de crear el esquema. Se corrigió desactivando la validación automática de DDL de Hibernate (`spring.jpa.hibernate.ddl-auto=none`), dándole control total a Flyway.
-   - Se unificó el nombre de la base de datos a `db_calificaciones` (estaba mal escrito en algunas partes como `db_califcaciones`).
-
-4. **Soporte robusto para MySQL en Docker (Linux y Windows):**
-   - Se implementó la configuración `--tmpfs` (en `docker-compose.yml`) para evadir los problemas de permisos al montar volúmenes de MySQL en distribuciones Linux recientes (como Arch Linux / CachyOS).
-
-5. **Corrección de dependencias:**
-   - Se eliminaron las dependencias conflictivas de tests excluyendo `junit-vintage-engine` donde correspondía y corrigiendo las versiones en los `pom.xml` de todo el proyecto.
+Este documento detalla todas las integraciones y sirve como **Guía Oficial** para tu Defensa Técnica.
 
 ---
 
-## 🛠️ Cómo levantar el proyecto
+## 🚀 1. Guía de Encendido (Cómo levantar el proyecto)
 
-Este repositorio está orquestado para ser levantado en un solo comando mediante `docker-compose`. 
+El proyecto está orquestado para ser levantado en un solo comando mediante `docker-compose`.
 
 ### Prerrequisitos
-- Tener **Docker Desktop** instalado (en Windows) o **Docker Daemon + Docker Compose** (en Linux).
+- Tener **Docker Desktop** (Windows/Mac) o **Docker Daemon + Compose** (Linux).
 - Tener los puertos libres: `3307` (MySQL), `8761` (Eureka) y `8090` (API Gateway).
 
-### Instrucciones para Linux y Windows
-
-1. **Abre una terminal** en la raíz del proyecto (donde se encuentra el archivo `docker-compose.yml`).
-2. **(Opcional pero recomendado)** Limpia cualquier contenedor previo o base de datos corrupta:
+### Pasos para levantar
+1. Abre una terminal en la raíz del proyecto.
+2. Limpia contenedores previos (opcional):
    ```bash
    docker compose down -v
    ```
-3. **Construye e inicia todos los servicios:**
+3. Construye e inicia todos los servicios en segundo plano:
    ```bash
    docker compose up --build -d
    ```
-   > **Nota:** El flag `--build` es crítico la primera vez o cada vez que hagas un cambio en el código fuente, ya que fuerza a Docker a compilar todos los `.jar` e instalar los últimos cambios.
-
-### ¿Qué sucede al ejecutar este comando?
-- **Base de datos:** Se levantará un contenedor de MySQL llamado `db-productos` en el puerto `3307`.
-- **Eureka Server:** Iniciará en el puerto `8761`.
-- **Microservicios y Gateway:** Docker construirá progresivamente los 10 microservicios (Estudiantes, Profesores, Asistencias, Cursos, Asignaturas, Matrículas, Biblioteca, Finanzas, Notificaciones, Calificaciones) y el `api-gateway` (Puerto `8090`). Esto puede tardar unos minutos dependiendo de la conexión a internet y el CPU.
+   *Nota: El `--build` fuerza a Docker a compilar los `.jar` con los últimos cambios.*
 
 ### Verificación
-1. Ingresa a [http://localhost:8761](http://localhost:8761) en tu navegador.
-2. Después de 1 o 2 minutos, deberás ver **11 instancias registradas** con estado `UP` (API-GATEWAY + los 10 servicios).
-3. Prueba cualquier endpoint a través del gateway, por ejemplo:
+1. Ingresa a [http://localhost:8761](http://localhost:8761) (Eureka). Debes ver **11 instancias** registradas (API-GATEWAY + 10 microservicios).
+2. Para probar Swagger, ingresa a: `http://localhost:8081/doc/swagger-ui.html` (o el puerto del servicio que desees revisar).
+3. Para probar HATEOAS, haz un GET a `http://localhost:8081/api/v2/carreras`.
+
+---
+
+## 📖 2. Guía de Estudio (Para la Defensa Oral)
+
+Aquí tienes el resumen de todos los conceptos implementados en la Unidad 3 que debes dominar para explicarle al profesor.
+
+### 🧪 3.1 Pruebas Unitarias (JUnit y Mockito)
+- **¿Qué son?** Pruebas que validan unidades individuales de código (generalmente los Services) aislando las dependencias.
+- **Given-When-Then:** Estructura que usamos. 
+  - *Given* (Dado): Preparamos los datos mock.
+  - *When* (Cuando): Llamamos al método real a probar.
+  - *Then* (Entonces): Verificamos los resultados con `asserts` (ej. `assertNotNull`, `assertEquals`).
+- **Mockito:** Se usa para simular (`@Mock`) el repositorio para no conectarnos a la base de datos real.
+- **Testing Plan:** Hemos documentado las reglas críticas y su cobertura en el archivo `TESTING_PLAN.md`. Esto demuestra profesionalismo al detectar qué casos faltan probar (Deuda Técnica).
+
+### 📝 3.2 Swagger y OpenAPI
+- **Propósito:** Generar documentación interactiva de la API para que otros desarrolladores sepan cómo consumirla.
+- **Anotaciones clave que usamos:**
+  - `@Tag`: Agrupa endpoints por categoría (ej. "Carreras").
+  - `@Operation`: Describe qué hace un endpoint específico.
+  - `@ApiResponse`: Documenta los posibles códigos de respuesta (200, 404, etc.).
+- **Configuración:** Usamos `springdoc-openapi-starter-webmvc-ui` y definimos una clase `@Configuration` con un `@Bean` que retorna un `OpenAPI` personalizado.
+
+### 🌐 HATEOAS (Hypermedia As The Engine Of Application State)
+- **¿Qué es?** Permite que las respuestas de la API devuelvan no solo los datos, sino también **enlaces (links)** hacia otras acciones o recursos relacionados.
+- **¿Cómo lo implementamos?**
+  - Añadimos `spring-boot-starter-hateoas`.
+  - Creamos un **Assembler** (`CarreraModelAssembler`) que implementa `RepresentationModelAssembler`.
+  - En los controladores V2, devolvemos `EntityModel` (para un objeto) o `CollectionModel` (para listas), los cuales incluyen los metadatos de hipermedia generados usando `linkTo` y `methodOn`.
+
+### 👥 DataFaker y Perfiles (Profiles) de Spring
+- **DataFaker:** Es una librería que usamos (`net.datafaker`) para poblar nuestra base de datos con datos de prueba automáticamente al iniciar el proyecto. Lo implementamos en la clase `DataLoader` (que implementa `CommandLineRunner`).
+- **Perfiles (`@Profile`):** Dividimos nuestra configuración en dos archivos: `application-dev.properties` (para desarrollo local, donde se activa el `DataLoader` y guardamos en una BD de dev) y `application-test.properties` (para ejecutar las pruebas unitarias limpiamente). Elegimos cuál usar con `spring.profiles.active=dev` o `test`.
+
+### 🚪 3.3 API Gateway, Eureka y YAML
+- **API Gateway:** Centraliza el enrutamiento. Todas las peticiones del frontend entran por el Gateway (puerto 8090) y este decide a qué microservicio redirigir.
+- **Eureka (Service Discovery):** Registro centralizado. Los microservicios se anuncian allí y el Gateway le pregunta a Eureka dónde está cada servicio (para no usar IPs quemadas en código, sino nombres como `lb://SERVICIO-ESTUDIANTES`).
+- **YAML (`application.properties` / `application.yml`):** Define propiedades dependientes del entorno (ej. puertos, credenciales de BD, rutas de Eureka).
+
+---
+
+## ⚡ 3. Guía de Cambios Rápidos (Cheat Sheet para la Defensa)
+
+Si el profesor te dice: *"Hazme este cambio en vivo para demostrar que tú hiciste el código"*.
+
+### Caso 1: "Agrega una nueva prueba unitaria"
+1. Ve a `src/test/java/.../service/` del microservicio que elijas.
+2. Copia una prueba existente, por ejemplo `testFindById()`.
+3. Cambia el nombre a `testFindById_NotFound()` y modifica el comportamiento del Mock:
+   ```java
+   when(repository.findById(999)).thenReturn(Optional.empty());
+   Reserva result = service.findById(999);
+   assertNull(result); // O lanza excepción, según tu lógica
    ```
-   http://localhost:8090/gateway/estudiantes/api/v1/estudiantes
+
+### Caso 2: "Cambia la documentación Swagger de este endpoint"
+1. Ve al controlador (ej. `CarreraController.java`).
+2. Ubica la anotación `@Operation`.
+3. Modifica el texto en `summary` o `description`:
+   ```java
+   @Operation(summary = "Obtiene carreras actualizadas", description = "Nueva descripción agregada en la defensa")
    ```
+4. Reinicia el microservicio desde el IDE o con Docker para que refleje el cambio.
+
+### Caso 3: "Añade un nuevo link HATEOAS a este modelo"
+1. Ve a tu `Assembler` (ej. `CarreraModelAssembler.java`).
+2. En el método `toModel`, añade un nuevo `linkTo`:
+   ```java
+   return EntityModel.of(carrera,
+       linkTo(methodOn(CarreraControllerV2.class).getCarreraByCodigo(carrera.getCodigo())).withSelfRel(),
+       linkTo(methodOn(CarreraControllerV2.class).getAllCarreras()).withRel("carreras"),
+       // NUEVO LINK AÑADIDO:
+       linkTo(methodOn(CarreraControllerV2.class).getCarreraByCodigo(carrera.getCodigo())).withRel("modificar_carrera")
+   );
+   ```
+
+### Caso 4: "Cambia una ruta o pre-fijo en el Gateway"
+1. Ve al `GatewayConfig.java` (o al archivo YAML si lo tienes por properties).
+2. Ubica la configuración de rutas, por ejemplo `.path("/gateway/estudiantes/**")`.
+3. Cámbialo por `.path("/api/v1/estudiantes/**")` y reinicia el servicio Gateway.

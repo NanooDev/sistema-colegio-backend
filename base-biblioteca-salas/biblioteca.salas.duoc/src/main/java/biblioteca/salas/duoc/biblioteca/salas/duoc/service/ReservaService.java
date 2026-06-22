@@ -27,4 +27,8 @@ public class ReservaService {
     public void deleteById(Integer id) {
         reservaRepository.deleteById(id);
     }
+
+    public List<Reserva> findBySalaCodigo(Integer codigoSala) {
+        return reservaRepository.findBySalaCodigo(codigoSala);
+    }
 }
