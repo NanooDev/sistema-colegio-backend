@@ -182,7 +182,7 @@ services:
       - eureka
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-      - SERVICIO_ESTUDIANTES_URL=lb://SERVICIO-ESTUDIANTES
+      - SERVICIO_ESTUDIANTES_URL=http://servicio-estudiantes:8081
       - SERVICIO_PROFESORES_URL=http://servicio-profesores:8082
       - SERVICIO_ASISTENCIAS_URL=http://servicio-asistencias:8083
       - SERVICIO_CURSOS_URL=http://servicio-cursos:8084
