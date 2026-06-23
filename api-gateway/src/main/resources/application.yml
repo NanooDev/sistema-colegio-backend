@@ -3,12 +3,6 @@ spring:
     name: api-gateway
   profiles:
     active: ${APP_PROFILE:dev}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://eureka:8761/eureka/}
-
   cloud:
     gateway:
       default-filters:
@@ -63,6 +57,11 @@ eureka:
           uri: ${SERVICIO_CALIFICACIONES_URL:http://localhost:8095}
           predicates:
             - Path=/api/v1/calificaciones/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://eureka:8761/eureka/}
 
 server:
   port: ${GATEWAY_PORT:8090}
