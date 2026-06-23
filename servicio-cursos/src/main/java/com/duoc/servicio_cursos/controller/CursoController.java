@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cursos")
+@RequestMapping("/api/v1/cursos")
 public class CursoController {
 
     @Autowired
