@@ -1,0 +1,2 @@
+# Fix line endings for mvnw script
+**/mvnw text eol=lf
