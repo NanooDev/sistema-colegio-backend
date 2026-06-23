@@ -5,14 +5,158 @@ networks:
     driver: bridge
 
 services:
-  # --- BASE DE DATOS ÚNICA ---
-  mysql-colegio:
+  # --- BASES DE DATOS INDEPENDIENTES ---
+  mysql-servicio-estudiantes:
     image: mysql:8.0
-    container_name: mysql-colegio
+    container_name: mysql-servicio-estudiantes
     environment:
       - MYSQL_ROOT_PASSWORD=root
     ports:
-      - "3306:3306"
+      - "3311:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-profesores:
+    image: mysql:8.0
+    container_name: mysql-servicio-profesores
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3312:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-asistencias:
+    image: mysql:8.0
+    container_name: mysql-servicio-asistencias
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3313:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-cursos:
+    image: mysql:8.0
+    container_name: mysql-servicio-cursos
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3314:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-asignaturas:
+    image: mysql:8.0
+    container_name: mysql-servicio-asignaturas
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3315:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-matriculas:
+    image: mysql:8.0
+    container_name: mysql-servicio-matriculas
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3316:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-biblioteca:
+    image: mysql:8.0
+    container_name: mysql-servicio-biblioteca
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3317:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-finanzas:
+    image: mysql:8.0
+    container_name: mysql-servicio-finanzas
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3318:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-notificaciones:
+    image: mysql:8.0
+    container_name: mysql-servicio-notificaciones
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3319:3306"
+    networks:
+      - microservicios-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mysql-servicio-calificaciones:
+    image: mysql:8.0
+    container_name: mysql-servicio-calificaciones
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3320:3306"
     networks:
       - microservicios-net
     healthcheck:
@@ -58,13 +202,13 @@ services:
     build: ./servicio-estudiantes
     container_name: servicio-estudiantes
     depends_on:
-      mysql-colegio:
+      mysql-servicio-estudiantes:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8081
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_estudiantes?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-estudiantes:3306/db_estudiantes?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -77,13 +221,13 @@ services:
     build: ./servicio-profesores
     container_name: servicio-profesores
     depends_on:
-      mysql-colegio:
+      mysql-servicio-profesores:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8082
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-profesores:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -96,13 +240,13 @@ services:
     build: ./servicio-asistencias
     container_name: servicio-asistencias
     depends_on:
-      mysql-colegio:
+      mysql-servicio-asistencias:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8083
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_asistencias?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-asistencias:3306/db_asistencias?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -115,13 +259,13 @@ services:
     build: ./servicio-cursos
     container_name: servicio-cursos
     depends_on:
-      mysql-colegio:
+      mysql-servicio-cursos:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8084
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_cursos?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-cursos:3306/db_cursos?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -134,13 +278,13 @@ services:
     build: ./servicio-asignaturas
     container_name: servicio-asignaturas
     depends_on:
-      mysql-colegio:
+      mysql-servicio-asignaturas:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8085
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_asignaturas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-asignaturas:3306/db_asignaturas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -153,13 +297,13 @@ services:
     build: ./servicio-matriculas
     container_name: servicio-matriculas
     depends_on:
-      mysql-colegio:
+      mysql-servicio-matriculas:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8086
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_matriculas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-matriculas:3306/db_matriculas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -172,13 +316,13 @@ services:
     build: ./servicio-biblioteca
     container_name: servicio-biblioteca
     depends_on:
-      mysql-colegio:
+      mysql-servicio-biblioteca:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8087
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_biblioteca?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-biblioteca:3306/db_biblioteca?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -191,13 +335,13 @@ services:
     build: ./servicio-finanzas
     container_name: servicio-finanzas
     depends_on:
-      mysql-colegio:
+      mysql-servicio-finanzas:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8088
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_finanzas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-finanzas:3306/db_finanzas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -210,13 +354,13 @@ services:
     build: ./servicio-notificaciones
     container_name: servicio-notificaciones
     depends_on:
-      mysql-colegio:
+      mysql-servicio-notificaciones:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8089
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-notificaciones:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
@@ -229,13 +373,13 @@ services:
     build: ./servicio-calificaciones
     container_name: servicio-calificaciones
     depends_on:
-      mysql-colegio:
+      mysql-servicio-calificaciones:
         condition: service_healthy
       eureka:
         condition: service_started
     environment:
       - SERVER_PORT=8095
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-colegio:3306/db_calificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-servicio-calificaciones:3306/db_calificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
