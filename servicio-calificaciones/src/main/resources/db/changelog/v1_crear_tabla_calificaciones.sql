@@ -1,3 +1,5 @@
+-- Liquibase ChangeLog
+-- changeset mariano:1
 CREATE TABLE `calificaciones` (
   `id` int NOT NULL AUTO_INCREMENT,
   `estudiante_id` int NOT NULL,

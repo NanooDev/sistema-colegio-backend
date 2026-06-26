@@ -1,156 +1,266 @@
-# 🏫 Sistema de Gestión Escolar - Backend
+# Sistema de Gestion Escolar - Backend
 
-Este proyecto consiste en una arquitectura de microservicios para la gestión de un colegio, desarrollada con **Java 21**, **Spring Boot** y **MySQL** gestionado en **Docker**.
+Arquitectura de microservicios para la gestion de un colegio, desarrollada con **Java 21**, **Spring Boot 4.0.5**, **Spring Cloud 2025.1.1** y **MySQL 8.0** gestionado en **Docker**.
 
-## 🛠️ Stack Tecnológico
-* **Lenguaje:** Java 21
-* **Framework:** Spring Boot
-* **Base de Datos:** MySQL 8.0 (Dockerizado)
-* **Construcción:** Maven (a través de `mvnw` y `mvnw.cmd`)
+## Stack Tecnologico
+
+| Tecnologia | Version | Uso |
+|---|---|---|
+| Java | 21 | Lenguaje principal |
+| Spring Boot | 4.0.5 | Framework de cada microservicio |
+| Spring Cloud | 2025.1.1 | Eureka (discovery) + Gateway (enrutamiento) + OpenFeign (comunicacion entre servicios) |
+| MySQL | 8.0 | Base de datos (una por microservicio, dockerizada) |
+| Liquibase | - | Migraciones y versionado del esquema de BD |
+| Springdoc OpenAPI | 3.0.3 | Documentacion Swagger de cada API |
+| Maven Wrapper | - | Construccion del proyecto (no requiere Maven instalado) |
+| Docker Compose | 3.8 | Orquestacion de contenedores |
 
 ---
 
-## 🚀 Guía de Instalación y Ejecución
+## Arquitectura
 
-Para poder echar a correr el sistema (la base de datos y los microservicios), sigue estos pasos cuidadosamente dependiendo de tu Sistema Operativo:
+```
+                         [API Gateway :8090]
+                                |
+                         [Eureka :8761]
+                                |
+    ----------------------------------------------------------------
+    |           |           |          |          |                 |
+[Estudiantes] [Profesores] [Cursos] [Asignaturas] [Calificaciones] ...
+   :8081        :8082       :8084     :8085         :8095
+```
 
-### 1. Requisitos Previos
-* **Java 21**: Necesitas tener el JDK 21 instalado en tu ordenador.
-* **Docker**: 
-  * **En Windows:** Instalar [Docker Desktop](https://www.docker.com/products/docker-desktop/). IMPORTANTE: Ábrelo y ve que el motor de Docker esté corriendo (icono verde) antes de seguir.
-  * **En Linux:** Tener instalado `docker` y el plugin `docker-compose`.
-* (Opcional) **IntelliJ IDEA**, **Eclipse** o **VS Code** con extensiones para Java.
+Cada microservicio tiene su propia base de datos MySQL, se registra en Eureka y es accesible a traves del API Gateway.
 
-### 2. Levantar la Base de Datos MySQL (Docker)
-Antes de ejecutar cualquier microservicio, la base de datos debe estar corriendo.
+---
 
-**Usuarios de Windows (CMD o PowerShell):**
-1. Abre tu terminal (Símbolo del Sistema o PowerShell).
-2. Navega a la carpeta que contiene el Docker Compose y levanta el contenedor:
-   ```cmd
-   cd servicio-estudiantes
-   docker compose up -d
-   cd ..
-   ```
+## Microservicios y Puertos
 
-**Usuarios de Linux / Mac:**
-1. Abre una terminal.
-2. Levanta el contenedor:
-   ```bash
-   cd servicio-estudiantes
-   docker compose up -d
-   cd ..
-   ```
+| Servicio | Puerto App | Puerto MySQL (Docker) | Base de datos |
+|---|---|---|---|
+| Eureka Server | 8761 | - | - |
+| API Gateway | 8090 | - | - |
+| servicio-estudiantes | 8081 | 3311 | db_estudiantes |
+| servicio-profesores | 8082 | 3312 | db_profesores |
+| servicio-asistencias | 8083 | 3313 | db_asistencias |
+| servicio-cursos | 8084 | 3314 | db_cursos |
+| servicio-asignaturas | 8085 | 3315 | db_asignaturas |
+| servicio-matriculas | 8086 | 3316 | db_matriculas |
+| servicio-biblioteca | 8087 | 3317 | db_biblioteca |
+| servicio-finanzas | 8088 | 3318 | db_finanzas |
+| servicio-notificaciones | 8089 | 3319 | db_notificaciones |
+| servicio-calificaciones | 8095 | 3320 | db_calificaciones |
 
-*(Nota: Esto levantará el contenedor de MySQL en el puerto 3306 usando como contraseña root `root`. Los datos persistirán localmente en las carpetas `datos_mysql`).*
+---
 
-### 3. Ejecutar TODO el sistema (Recomendado para Evaluación 3)
-Si deseas levantar todos los microservicios, la base de datos, Eureka y el Gateway con un solo comando:
+## Requisitos Previos
 
-1. Asegúrate de que no haya otros servicios ocupando el puerto 3306 (detener MySQL local si existe).
-2. Ve a la raíz del proyecto (`sistema-colegio-backend`).
-3. Ejecuta:
-   ```bash
-   docker compose up -d --build
-   ```
-*(Nota: Esto construirá las imágenes de todos los servicios y los levantará. Ten en cuenta que requiere una buena cantidad de memoria RAM. Puedes ver el estado de todo en Docker Desktop o con `docker ps`).*
+Antes de levantar el sistema necesitas tener instalado:
 
-### 4. Ejecutar Microservicios Individualmente
-El sistema está compuesto por múltiples servicios independientes...
+1. **Java 21 (JDK)** - Verificar con `java -version`
+2. **Docker Desktop** (Windows/Mac) o **Docker Engine + docker-compose** (Linux)
+   - En Windows: abrir Docker Desktop y verificar que el motor este corriendo (icono verde)
+3. **Git** - Para clonar el repositorio
 
-Dado que usamos el _wrapper_ de Maven (`mvnw`), **no necesitas instalar Maven en tu PC**. 
+> No necesitas instalar Maven. El proyecto incluye Maven Wrapper (`mvnw` / `mvnw.cmd`) que descarga automaticamente la version correcta.
 
-Para arrancar un servicio (por ejemplo, el de Estudiantes), abre una nueva terminal y ejecuta:
+---
 
-**Usuarios de Windows (CMD o PowerShell):**
+## Guia de Instalacion y Ejecucion
+
+### Opcion A: Levantar TODO con Docker Compose (Recomendado)
+
+Este comando construye y levanta los 10 microservicios, Eureka, el Gateway y las 10 bases de datos MySQL:
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/NanooDev/sistema-colegio-backend.git
+cd sistema-colegio-backend
+
+# 2. Levantar todo
+docker compose up -d --build
+```
+
+Espera unos minutos a que todos los contenedores esten healthy. Puedes verificar el estado con:
+
+```bash
+docker ps
+```
+
+Una vez levantado:
+- **Eureka Dashboard:** http://localhost:8761
+- **API Gateway:** http://localhost:8090
+- **Swagger del Gateway:** http://localhost:8090/doc/swagger-ui.html
+
+> **Nota:** Requiere buena cantidad de RAM. Si tu equipo tiene menos de 8 GB, usa la Opcion B.
+
+### Opcion B: Levantar servicios individualmente
+
+Util para desarrollo o si quieres levantar solo los servicios que necesitas.
+
+**Paso 1 - Levantar MySQL con Docker:**
+
+Cada microservicio tiene su propia BD. Al ejecutar `docker compose up -d` desde la raiz se levantan todas las BD. Si solo necesitas una:
+
+```bash
+docker compose up -d mysql-servicio-estudiantes
+```
+
+**Paso 2 - Levantar Eureka (obligatorio):**
+
+Eureka es el service discovery. Todos los microservicios se registran ahi.
+
+Windows:
+```cmd
+cd eureka
+.\mvnw.cmd spring-boot:run
+```
+
+Linux / Mac:
+```bash
+cd eureka
+./mvnw spring-boot:run
+```
+
+**Paso 3 - Levantar el microservicio que necesites:**
+
+Windows:
 ```cmd
 cd servicio-estudiantes
 .\mvnw.cmd spring-boot:run
 ```
 
-**Usuarios de Linux / Mac:**
+Linux / Mac:
 ```bash
 cd servicio-estudiantes
 ./mvnw spring-boot:run
 ```
 
->**IMPORTANTE**: Debes repetir este paso para cada microservicio que desees levantar (ej. `servicio-profesores`, `servicio-cursos`, etc.) en *terminales distintas*. Asegúrate de que cada servicio esté configurado (en su `application.properties`/`yml`) para correr en **puertos diferentes** (ej: 8081, 8082...), de lo contrario, chocarán y dará error.
+> Repetir para cada microservicio que necesites, cada uno en su propia terminal.
 
-### 3.1 Ejecutar API Gateway (requerido para evaluación 3)
-Se agregó un gateway en `api-gateway` para centralizar el enrutamiento de los microservicios.
+**Paso 4 - Levantar el API Gateway (opcional, necesario para acceder via puerto unico):**
 
-**Windows:**
+Windows:
 ```cmd
 cd api-gateway
-..\servicio-estudiantes\mvnw.cmd spring-boot:run
+.\mvnw.cmd spring-boot:run
 ```
 
-**Linux / Mac:**
+Linux / Mac:
 ```bash
 cd api-gateway
-../servicio-estudiantes/mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
-
-Gateway URL base: `http://localhost:8090`
-
-Ejemplo de consumo por gateway:
-- `http://localhost:8090/gateway/estudiantes/api/v1/estudiantes`
-- `http://localhost:8090/gateway/profesores/api/profesores`
-
-Swagger del gateway:
-- `http://localhost:8090/doc/swagger-ui.html`
-
-### 3.2 Logs de aplicación y acceso HTTP
-Cada microservicio genera:
-- Log de aplicación en `logs/<spring.application.name>.log`
-- Log de acceso HTTP en `logs/<spring.application.name>-access.log`
-
-Esto deja evidencia trazable para defensa técnica (errores, requests, códigos HTTP y tiempos de respuesta).
-
-### 4. Configuración de Base de Datos y Creación de Tablas
-El sistema debería crear automáticamente las tablas iniciales al arrancar cada microservicio (gracias a Hibernate/JPA o Liquibase). NO necesitas crear bases de datos ni tablas manualmente.
 
 ---
 
-## 📐 Flujo de Trabajo del Equipo (Git)
+## Documentacion Swagger
 
-Los comandos de Git son exactamente **los mismos** para Windows y Linux:
+Cada microservicio expone su documentacion Swagger en:
 
-### Paso 1: Clonar el proyecto (Solo la primera vez)
+```
+http://localhost:{PUERTO}/doc/swagger-ui.html
+```
+
+Ejemplos:
+- Estudiantes: http://localhost:8081/doc/swagger-ui.html
+- Profesores: http://localhost:8082/doc/swagger-ui.html
+- Gateway (agrupa todos): http://localhost:8090/doc/swagger-ui.html
+
+La documentacion incluye ejemplos de request/response gracias a las anotaciones `@Schema` en los DTOs y `@Operation`/`@ApiResponses` en los controllers.
+
+---
+
+## Endpoints principales (via Gateway)
+
+Todos los endpoints son accesibles a traves del Gateway en `http://localhost:8090`:
+
+| Recurso | URL |
+|---|---|
+| Estudiantes | `http://localhost:8090/api/v1/estudiantes` |
+| Profesores | `http://localhost:8090/api/v1/profesores` |
+| Cursos | `http://localhost:8090/api/v1/cursos` |
+| Asignaturas | `http://localhost:8090/api/v1/asignaturas` |
+| Asistencias | `http://localhost:8090/api/v1/asistencias` |
+| Calificaciones | `http://localhost:8090/api/v1/calificaciones` |
+| Matriculas | `http://localhost:8090/api/v1/matriculas` |
+| Biblioteca | `http://localhost:8090/api/v1/biblioteca` |
+| Finanzas | `http://localhost:8090/api/v1/finanzas` |
+| Notificaciones | `http://localhost:8090/api/v1/notificaciones` |
+
+Cada recurso soporta las operaciones CRUD estandar: `GET`, `POST`, `PUT`, `DELETE`.
+
+---
+
+## Logs
+
+Cada microservicio genera logs en la carpeta `logs/` de su directorio:
+- `logs/{nombre-servicio}.log` - Log de aplicacion
+- `logs/{nombre-servicio}-access.log` - Log de acceso HTTP (requests, status, tiempos)
+
+---
+
+## Testing
+
+Los tests de cada microservicio usan el patron `@WebMvcTest` + `@MockitoBean` + `MockMvc` para testear los controllers con Spring context.
+
+Para ejecutar los tests de un servicio:
+
 ```bash
+cd servicio-estudiantes
+./mvnw test
+```
+
+---
+
+## Flujo de Trabajo Git
+
+```bash
+# 1. Clonar (solo la primera vez)
 git clone https://github.com/NanooDev/sistema-colegio-backend.git
-```
 
-### Paso 2: Actualizarse antes de empezar a trabajar
-**REGLA DE ORO**: Antes de escribir una sola línea de código, deben traer lo que sus compañeros hicieron para evitar conflictos:
-```bash
+# 2. Actualizarse antes de trabajar
 git pull origin main
-```
 
-### Paso 3: Trabajar en una "Rama" (Branch)
-Nunca trabajen directo en `main`. Creen su propio espacio:
-```bash
-# Ejemplo creando rama para el servicio de estudiantes
-git checkout -b funcionalidad/estudiantes
-```
+# 3. Crear rama para tu funcionalidad
+git checkout -b funcionalidad/nombre-descriptivo
 
-### Paso 4: Guardar y subir sus cambios
-```bash
+# 4. Guardar y subir cambios
 git add .
-git commit -m "Descripción clara del cambio"
-git push origin funcionalidad/estudiantes
-```
+git commit -m "Descripcion clara del cambio"
+git push origin funcionalidad/nombre-descriptivo
 
-### Paso 5: Unir los cambios (Pull Request)
-En GitHub, usa el botón **"Compare & pull request"**. Un encargado debe revisar y dar "Merge".
+# 5. Crear Pull Request en GitHub
+```
 
 ---
-## 👥 Organización de Servicios (Referencia)
-- **Servicio Estudiantes**: Mariano 
+
+## Organizacion del Equipo
+
+- **Servicio Estudiantes**: Mariano
 - **Servicio Profesores**: Alvaro
 - **Servicio Cursos**: Felipe
-- (Otros servicios en desarrollo: *Asignaturas, Asistencias, Biblioteca, Calificaciones, Finanzas, Matriculas, Notificaciones*).
-- **API Gateway**: `api-gateway` (puerto 8090)
 
-## 🧪 Pruebas con Postman
-Si deseas probar la comunicación real entre los microservicios, consulta: [Guía de Pruebas de API (TESTING.md)](TESTING.md).
+---
+
+## Historial de Cambios
+
+### 2026-06-26 - Correccion de diferencias respecto a la referencia de clases (Felipe Sepulveda)
+
+Correcciones aplicadas segun el informe de diferencias entregado por el profesor:
+
+1. **Patron de servicio (servicio-cursos):** Se elimino el patron Interface + Implementacion (`CursoService` interface + `CursoServiceImpl`) y se reemplazo por clase directa `@Service`, consistente con los demas microservicios y lo visto en clases.
+
+2. **Anotaciones Swagger en Controllers:** Se agregaron `@Tag`, `@Operation`, `@ApiResponses` y `@ApiResponse` en los 10 controllers para documentar cada endpoint en Swagger UI.
+
+3. **Anotaciones @Schema en DTOs:** Se agregaron `@Schema(description, example)` en todos los campos de los 21 DTOs y Requests para que Swagger muestre ejemplos concretos en la documentacion.
+
+4. **Patron de Testing:** Se migraron los 10 tests del patron `@ExtendWith(MockitoExtension.class)` + `@Mock` + `@InjectMocks` (unit test del service) al patron `@WebMvcTest` + `@MockitoBean` + `MockMvc` (test de integracion del controller), como se vio en clases. Se agrego la dependencia `spring-boot-starter-webmvc-test` requerida en Spring Boot 4.x.
+
+5. **Dockerfiles:** Se reemplazo la instalacion de Maven via `apk` con mirror de Google por el Maven Wrapper (`mvnw`) incluido en el proyecto, en los 12 Dockerfiles.
+
+6. **Nombres en Gateway:** Se cambiaron las URIs del API Gateway de minusculas (`lb://servicio-estudiantes`) a MAYUSCULAS (`lb://SERVICIO-ESTUDIANTES`), siguiendo la convencion de Eureka.
+
+7. **InfoController:** Se eliminaron los 6 InfoControllers que no eran parte de los requerimientos del proyecto (asignaturas, asistencias, biblioteca, finanzas, matriculas, notificaciones).
+
+8. **Bug servicio-calificaciones:** Se corrigio el conflicto Flyway/Liquibase que impedia levantar el microservicio. El `pom.xml` tenia la dependencia de Liquibase pero el `application.properties` configuraba Flyway. Se migro a Liquibase para ser consistente con los demas servicios.

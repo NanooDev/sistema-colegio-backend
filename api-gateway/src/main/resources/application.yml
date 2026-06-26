@@ -11,52 +11,52 @@ spring:
             - PreserveHostHeader
           routes:
             - id: ruta-estudiantes
-              uri: lb://servicio-estudiantes
+              uri: lb://SERVICIO-ESTUDIANTES
               predicates:
                 - Path=/api/v1/estudiantes/**
 
             - id: ruta-profesores
-              uri: lb://servicio-profesores
+              uri: lb://SERVICIO-PROFESORES
               predicates:
                 - Path=/api/v1/profesores/**
 
             - id: ruta-asistencias
-              uri: lb://servicio-asistencias
+              uri: lb://SERVICIO-ASISTENCIAS
               predicates:
                 - Path=/api/v1/asistencias/**
 
             - id: ruta-cursos
-              uri: lb://servicio-cursos
+              uri: lb://SERVICIO-CURSOS
               predicates:
                 - Path=/api/v1/cursos/**
 
             - id: ruta-asignaturas
-              uri: lb://servicio-asignaturas
+              uri: lb://SERVICIO-ASIGNATURAS
               predicates:
                 - Path=/api/v1/asignaturas/**
 
             - id: ruta-matriculas
-              uri: lb://servicio-matriculas
+              uri: lb://SERVICIO-MATRICULAS
               predicates:
                 - Path=/api/v1/matriculas/**
 
             - id: ruta-biblioteca
-              uri: lb://servicio-biblioteca
+              uri: lb://SERVICIO-BIBLIOTECA
               predicates:
                 - Path=/api/v1/biblioteca/**
 
             - id: ruta-finanzas
-              uri: lb://servicio-finanzas
+              uri: lb://SERVICIO-FINANZAS
               predicates:
                 - Path=/api/v1/finanzas/**
 
             - id: ruta-notificaciones
-              uri: lb://servicio-notificaciones
+              uri: lb://SERVICIO-NOTIFICACIONES
               predicates:
                 - Path=/api/v1/notificaciones/**
 
             - id: ruta-calificaciones
-              uri: lb://servicio-calificaciones
+              uri: lb://SERVICIO-CALIFICACIONES
               predicates:
                 - Path=/api/v1/calificaciones/**
 

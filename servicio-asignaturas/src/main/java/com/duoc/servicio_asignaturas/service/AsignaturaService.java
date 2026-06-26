@@ -10,9 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AsignaturaService {
+
+    private static final Logger log = LoggerFactory.getLogger(AsignaturaService.class);
 
     @Autowired
     private AsignaturaRepository repository;
@@ -21,16 +25,24 @@ public class AsignaturaService {
         Asignatura e = new Asignatura();
         e.setNombre(request.getNombre());
         e.setCodigo(request.getCodigo());
+        log.info("Guardando asignatura: {}", request.getCodigo());
         return convertirADTO(repository.save(e));
     }
 
     public List<AsignaturaDTO> listar() {
-        return repository.findAll().stream().map(this::convertirADTO).collect(Collectors.toList());
+        List<AsignaturaDTO> lista = repository.findAll().stream().map(this::convertirADTO).collect(Collectors.toList());
+        if (lista.isEmpty()) {
+            log.warn("No se encontraron asignaturas");
+        }
+        return lista;
     }
 
     public AsignaturaDTO buscarPorId(Long id) {
-        Asignatura e = repository.findById(id).orElseThrow(() -> new AsignaturaNotFoundException(id));
-        return convertirADTO(e);
+        Asignatura e = repository.findById(id).orElseThrow(() -> {
+            log.error("No se encontró la asignatura con ID: {}", id);
+            return new AsignaturaNotFoundException(id);
+        });
+        return convertirADTO(e); 
     }
 
     public AsignaturaDTO actualizar(Long id, AsignaturaRequest request) {

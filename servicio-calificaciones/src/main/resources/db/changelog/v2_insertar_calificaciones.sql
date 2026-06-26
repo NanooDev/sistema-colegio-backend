@@ -1,3 +1,5 @@
+-- Liquibase ChangeLog
+-- changeset mariano:2
 INSERT INTO calificaciones (estudiante_id, curso_id, nota1, nota2, nota3, nota_final, estado, fecha) VALUES (1, 1, 6.0, 5.0, 7.0, 6.0, 'Aprobado', '2023-01-15');
 INSERT INTO calificaciones (estudiante_id, curso_id, nota1, nota2, nota3, nota_final, estado, fecha) VALUES (2, 1, 7.0, 6.0, 7.0, 6.666666666666667, 'Aprobado', '2023-01-15');
 INSERT INTO calificaciones (estudiante_id, curso_id, nota1, nota2, nota3, nota_final, estado, fecha) VALUES (1, 2, 5.0, 4.0, 6.0, 5.0, 'Aprobado', '2023-02-10');
