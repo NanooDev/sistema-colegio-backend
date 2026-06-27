@@ -1,4 +1,5 @@
--- Liquibase ChangeLog
+-- liquibase formatted sql
+
 -- changeset mariano:1
 CREATE TABLE estudiantes (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

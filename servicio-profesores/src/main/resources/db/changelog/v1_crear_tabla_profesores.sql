@@ -1,4 +1,5 @@
--- Liquibase ChangeLog
+-- liquibase formatted sql
+
 -- changeset duoc:1
 CREATE TABLE profesores (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

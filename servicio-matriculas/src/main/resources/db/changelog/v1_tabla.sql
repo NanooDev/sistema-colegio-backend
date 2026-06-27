@@ -1,3 +1,5 @@
+-- liquibase formatted sql
+
 -- changeset duoc:1
 CREATE TABLE matriculas (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

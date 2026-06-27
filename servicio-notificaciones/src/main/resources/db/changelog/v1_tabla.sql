@@ -1,3 +1,5 @@
+-- liquibase formatted sql
+
 -- changeset duoc:1
 CREATE TABLE notificaciones (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
