@@ -57,6 +57,16 @@ public class MatriculaController {
         return new ResponseEntity<>(service.buscarPorId(id), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener matrícula con detalles", description = "Obtiene una matrícula con información del estudiante y curso via comunicación REST")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Matrícula con detalles obtenida exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Matrícula no encontrada")
+    })
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<MatriculaDTO> obtenerConDetalles(@PathVariable Long id) {
+        return new ResponseEntity<>(service.obtenerMatriculaConDetalles(id), HttpStatus.OK);
+    }
+
     @Operation(summary = "Actualizar matrícula", description = "Actualiza una matrícula existente por su ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Matrícula actualizada exitosamente"),

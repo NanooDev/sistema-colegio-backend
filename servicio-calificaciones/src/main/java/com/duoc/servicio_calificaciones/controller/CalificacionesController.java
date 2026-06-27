@@ -57,6 +57,16 @@ public class CalificacionesController {
         return new ResponseEntity<>(calificacionesService.buscarPorId(id), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener calificación con estudiante", description = "Obtiene una calificación con el nombre del estudiante via comunicación REST")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Calificación con detalles obtenida exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Calificación no encontrada")
+    })
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<CalificacionDTO> obtenerConDetalles(@PathVariable Integer id) {
+        return new ResponseEntity<>(calificacionesService.obtenerCalificacionConEstudiante(id), HttpStatus.OK);
+    }
+
     @Operation(summary = "Buscar calificaciones por estudiante", description = "Obtiene todas las calificaciones de un estudiante")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente"),

@@ -1,13 +1,13 @@
-package com.duoc.servicio_cursos.client;
+package com.duoc.servicio_calificaciones.client;
 
-import com.duoc.servicio_cursos.dto.EstudianteDTO;
+import com.duoc.servicio_calificaciones.dto.EstudianteDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import java.util.List;
 
 @FeignClient(name = "servicio-estudiantes", url = "${feign.estudiantes.url:http://localhost:8081/api/v1/estudiantes}")
 public interface EstudianteFeign {
-    @GetMapping("/curso/{cursoId}")
-    List<EstudianteDTO> obtenerEstudiantesPorCurso(@PathVariable("cursoId") Long cursoId);
+
+    @GetMapping("/{id}")
+    EstudianteDTO obtenerEstudiantePorId(@PathVariable("id") Integer id);
 }

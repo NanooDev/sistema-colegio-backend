@@ -1,10 +1,14 @@
 package com.duoc.servicio_calificaciones.service;
 
+import com.duoc.servicio_calificaciones.client.EstudianteFeign;
 import com.duoc.servicio_calificaciones.dto.CalificacionDTO;
 import com.duoc.servicio_calificaciones.dto.CalificacionRequest;
+import com.duoc.servicio_calificaciones.dto.EstudianteDTO;
 import com.duoc.servicio_calificaciones.exception.CalificacionNotFoundException;
 import com.duoc.servicio_calificaciones.model.Calificacion;
 import com.duoc.servicio_calificaciones.repository.CalificacionesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +18,13 @@ import java.util.stream.Collectors;
 @Service
 public class CalificacionesService {
 
+    private static final Logger log = LoggerFactory.getLogger(CalificacionesService.class);
+
     @Autowired
     private CalificacionesRepository calificacionesRepository;
+
+    @Autowired
+    private EstudianteFeign estudianteFeign;
 
     public CalificacionDTO guardar(CalificacionRequest request) {
         Calificacion calificacion = new Calificacion();
@@ -78,6 +87,21 @@ public class CalificacionesService {
             throw new CalificacionNotFoundException(id);
         }
         calificacionesRepository.deleteById(id);
+    }
+
+    public CalificacionDTO obtenerCalificacionConEstudiante(Integer id) {
+        Calificacion calificacion = calificacionesRepository.findById(id)
+                .orElseThrow(() -> new CalificacionNotFoundException(id));
+        CalificacionDTO dto = convertirADTO(calificacion);
+
+        try {
+            EstudianteDTO estudiante = estudianteFeign.obtenerEstudiantePorId(calificacion.getEstudianteId());
+            dto.setNombreEstudiante(estudiante.getNombre() + " " + estudiante.getApellido());
+        } catch (Exception ex) {
+            log.error("No se pudo obtener el estudiante con ID {}: {}", calificacion.getEstudianteId(), ex.getMessage());
+        }
+
+        return dto;
     }
 
     private Double calcularNotaFinal(Double nota1, Double nota2, Double nota3) {

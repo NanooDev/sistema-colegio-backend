@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.math.BigDecimal;
 
 @Data
-@JsonPropertyOrder({ "categoria", "id", "estudianteId", "concepto", "monto", "fechaPago" })
+@JsonPropertyOrder({ "categoria", "id", "estudianteId", "nombreEstudiante", "concepto", "monto", "fechaPago" })
 public class CargoDTO {
     @Schema(description = "Categoría del recurso", example = "cargo")
     private String categoria = "cargo";
@@ -17,6 +17,9 @@ public class CargoDTO {
 
     @Schema(description = "Identificador del estudiante", example = "1")
     private Long estudianteId;
+
+    @Schema(description = "Nombre completo del estudiante (obtenido via comunicación REST)", example = "Ana Perez")
+    private String nombreEstudiante;
 
     @Schema(description = "Concepto del cargo", example = "Matrícula anual")
     private String concepto;

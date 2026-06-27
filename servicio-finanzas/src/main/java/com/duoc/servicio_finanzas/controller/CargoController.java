@@ -57,6 +57,16 @@ public class CargoController {
         return new ResponseEntity<>(service.buscarPorId(id), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener cargo con estudiante", description = "Obtiene un cargo con el nombre del estudiante via comunicación REST")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Cargo con detalles obtenido exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Cargo no encontrado")
+    })
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<CargoDTO> obtenerConDetalles(@PathVariable Long id) {
+        return new ResponseEntity<>(service.obtenerCargoConEstudiante(id), HttpStatus.OK);
+    }
+
     @Operation(summary = "Actualizar cargo", description = "Actualiza un cargo financiero existente por su ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cargo actualizado exitosamente"),

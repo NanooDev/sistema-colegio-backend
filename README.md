@@ -190,6 +190,18 @@ Todos los endpoints son accesibles a traves del Gateway en `http://localhost:809
 
 Cada recurso soporta las operaciones CRUD estandar: `GET`, `POST`, `PUT`, `DELETE`.
 
+### Endpoints de detalle (comunicacion entre microservicios)
+
+Estos endpoints enriquecen la respuesta con datos de otros microservicios via OpenFeign:
+
+| Endpoint | Descripcion |
+|---|---|
+| `GET /api/v1/cursos/{id}/detalle` | Curso con nombre del profesor y lista de estudiantes |
+| `GET /api/v1/matriculas/{id}/detalle` | Matricula con nombre del estudiante y nombre del curso |
+| `GET /api/v1/asistencias/{id}/detalle` | Asistencia con nombre del estudiante |
+| `GET /api/v1/calificaciones/{id}/detalle` | Calificacion con nombre del estudiante |
+| `GET /api/v1/finanzas/{id}/detalle` | Cargo financiero con nombre del estudiante |
+
 ---
 
 ## Logs
@@ -202,13 +214,33 @@ Cada microservicio genera logs en la carpeta `logs/` de su directorio:
 
 ## Testing
 
-Los tests de cada microservicio usan el patron `@WebMvcTest` + `@MockitoBean` + `MockMvc` para testear los controllers con Spring context.
+El proyecto cuenta con dos capas de testing:
 
-Para ejecutar los tests de un servicio:
+### Tests unitarios de Service (`@ExtendWith(MockitoExtension.class)`)
+
+Validan la logica de negocio de cada microservicio con mocks del repositorio y clientes Feign. Estructura **Given-When-Then** con asserts precisos.
+
+Cobertura por servicio:
+- CRUD completo: guardar, listar, buscarPorId, actualizar, eliminar
+- Reglas de negocio: validacion de RUT duplicado (estudiantes), calculo de nota final y estado aprobado/reprobado (calificaciones)
+- Excepciones: `*NotFoundException` en operaciones sobre entidades inexistentes
+- Comunicacion REST: exito y fallback cuando el servicio remoto no responde
+
+### Tests de Controller (`@WebMvcTest` + `@MockitoBean` + `MockMvc`)
+
+Validan los endpoints REST con Spring context, verificando codigos HTTP, serializacion JSON y comportamiento del controller.
+
+### Ejecutar tests
 
 ```bash
 cd servicio-estudiantes
 ./mvnw test
+```
+
+Para ejecutar los tests de todos los servicios:
+
+```bash
+for dir in servicio-*/; do echo "=== $dir ===" && cd "$dir" && ./mvnw test -q && cd ..; done
 ```
 
 ---
@@ -244,6 +276,20 @@ git push origin funcionalidad/nombre-descriptivo
 ---
 
 ## Historial de Cambios
+
+### 2026-06-26 - Integracion de pruebas unitarias, YAML y comunicacion inter-servicio (Felipe Sepulveda)
+
+Mejoras para cumplir con los requisitos de la Evaluacion Parcial 3:
+
+1. **Pruebas unitarias de capa Service:** Se crearon 10 clases `*ServiceTest` con estructura Given-When-Then, `@ExtendWith(MockitoExtension.class)`, `@Mock` para repositorios y clientes Feign, y `@InjectMocks`. Cobertura de CRUD completo, reglas de negocio (RUT duplicado, calculo de nota final, estado aprobado/reprobado) y manejo de errores.
+
+2. **Migracion a YAML:** Se reemplazaron los 10 archivos `application.properties` por `application.yml` con configuracion organizada por secciones y perfil `docker` separado para despliegue en contenedores.
+
+3. **Comunicacion REST inter-servicio:** Se agrego OpenFeign a 4 servicios adicionales (matriculas, asistencias, calificaciones, finanzas) para consumir datos de servicio-estudiantes y servicio-cursos. Cada servicio incluye endpoint `/detalle` con manejo de errores remotos y logging.
+
+4. **`@EnableFeignClients`:** Se agrego la anotacion en las Application classes de matriculas, asistencias, calificaciones y finanzas.
+
+5. **DTOs enriquecidos:** Se agregaron campos `nombreEstudiante` y `nombreCurso` a los DTOs de matriculas, asistencias, calificaciones y finanzas con anotaciones `@Schema` para Swagger.
 
 ### 2026-06-26 - Correccion de diferencias respecto a la referencia de clases (Felipe Sepulveda)
 

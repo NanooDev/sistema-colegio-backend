@@ -57,6 +57,16 @@ public class AsistenciaController {
         return new ResponseEntity<>(service.buscarPorId(id), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener asistencia con estudiante", description = "Obtiene una asistencia con el nombre del estudiante via comunicación REST")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Asistencia con detalles obtenida exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Asistencia no encontrada")
+    })
+    @GetMapping("/{id}/detalle")
+    public ResponseEntity<AsistenciaDTO> obtenerConDetalles(@PathVariable Long id) {
+        return new ResponseEntity<>(service.obtenerAsistenciaConEstudiante(id), HttpStatus.OK);
+    }
+
     @Operation(summary = "Actualizar asistencia", description = "Actualiza una asistencia existente por su ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Asistencia actualizada exitosamente"),

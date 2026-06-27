@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-@JsonPropertyOrder({ "categoria", "id", "estudianteId", "cursoId", "fecha", "presente" })
+@JsonPropertyOrder({ "categoria", "id", "estudianteId", "nombreEstudiante", "cursoId", "fecha", "presente" })
 public class AsistenciaDTO {
     @Schema(description = "Categoría del recurso", example = "asistencia")
     private String categoria = "asistencia";
@@ -16,6 +16,9 @@ public class AsistenciaDTO {
 
     @Schema(description = "Identificador del estudiante", example = "1")
     private Long estudianteId;
+
+    @Schema(description = "Nombre completo del estudiante (obtenido via comunicación REST)", example = "Ana Perez")
+    private String nombreEstudiante;
 
     @Schema(description = "Identificador del curso", example = "1")
     private Long cursoId;
