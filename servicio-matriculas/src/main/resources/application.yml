@@ -2,7 +2,7 @@ spring:
   application:
     name: servicio-matriculas
   datasource:
-    url: jdbc:mysql://localhost:3306/db_matriculas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3316/db_matriculas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

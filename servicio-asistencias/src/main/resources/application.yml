@@ -2,7 +2,7 @@ spring:
   application:
     name: servicio-asistencias
   datasource:
-    url: jdbc:mysql://localhost:3306/db_asistencias?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3313/db_asistencias?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

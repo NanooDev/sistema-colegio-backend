@@ -94,13 +94,24 @@ Una vez levantado:
 
 > **Nota:** Requiere buena cantidad de RAM. Si tu equipo tiene menos de 8 GB, usa la Opcion B.
 
+### Perfiles de configuracion
+
+Cada servicio tiene dos perfiles en su `application.yml`:
+
+| Perfil | Cuando se usa | BD | Eureka |
+|---|---|---|---|
+| base (sin perfil) | Desarrollo local (`mvnw spring-boot:run`) | `localhost:3311-3320` (las BD dockerizadas) | `localhost:8761` |
+| `docker` | Dentro de contenedores (lo activa docker-compose via `SPRING_PROFILES_ACTIVE=docker`) | `mysql-servicio-X:3306` (red interna) | `eureka:8761` |
+
+No se necesita configurar nada manualmente: docker-compose activa el perfil correcto y en local se usa el perfil base por defecto.
+
 ### Opcion B: Levantar servicios individualmente
 
 Util para desarrollo o si quieres levantar solo los servicios que necesitas.
 
 **Paso 1 - Levantar MySQL con Docker:**
 
-Cada microservicio tiene su propia BD. Al ejecutar `docker compose up -d` desde la raiz se levantan todas las BD. Si solo necesitas una:
+Cada microservicio tiene su propia BD, expuesta en un puerto distinto del host (3311-3320, ver tabla de puertos). Los `application.yml` ya apuntan a esos puertos, asi que basta con levantar la BD que necesites:
 
 ```bash
 docker compose up -d mysql-servicio-estudiantes
@@ -167,7 +178,11 @@ Ejemplos:
 - Profesores: http://localhost:8082/doc/swagger-ui.html
 - Gateway (agrupa todos): http://localhost:8090/doc/swagger-ui.html
 
+El Swagger del Gateway federa la documentacion de los 10 microservicios: usa el **selector desplegable** (arriba a la derecha) para cambiar entre estudiantes, profesores, cursos, asignaturas, asistencias, calificaciones, matriculas, biblioteca, finanzas y notificaciones, y probar cualquier endpoint desde un unico punto.
+
 La documentacion incluye ejemplos de request/response gracias a las anotaciones `@Schema` en los DTOs y `@Operation`/`@ApiResponses` en los controllers.
+
+> **CORS:** el Gateway maneja CORS de forma global (`globalcors`), por lo que cualquier frontend puede consumir la API via `http://localhost:8090` sin configuracion adicional. Los microservicios no usan `@CrossOrigin`.
 
 ---
 
@@ -196,11 +211,26 @@ Estos endpoints enriquecen la respuesta con datos de otros microservicios via Op
 
 | Endpoint | Descripcion |
 |---|---|
-| `GET /api/v1/cursos/{id}/detalle` | Curso con nombre del profesor y lista de estudiantes |
+| `GET /api/v1/cursos/{id}` | Curso con profesor jefe y lista de estudiantes (Feign a profesores y estudiantes) |
 | `GET /api/v1/matriculas/{id}/detalle` | Matricula con nombre del estudiante y nombre del curso |
 | `GET /api/v1/asistencias/{id}/detalle` | Asistencia con nombre del estudiante |
 | `GET /api/v1/calificaciones/{id}/detalle` | Calificacion con nombre del estudiante |
 | `GET /api/v1/finanzas/{id}/detalle` | Cargo financiero con nombre del estudiante |
+
+Los clientes Feign resuelven por nombre registrado en Eureka (con load balancing), por lo que funcionan igual en local y en Docker. Si el servicio remoto no responde, el endpoint degrada la respuesta (campos remotos en `null` o "Desconocido") en lugar de fallar.
+
+### Datos de ejemplo (seeds)
+
+Al levantar el sistema, Liquibase inserta datos iniciales coherentes entre servicios para poder probar los endpoints de detalle de inmediato:
+
+| Servicio | Datos |
+|---|---|
+| Profesores | Maria Gonzalez (id 1), Pedro Rojas (id 2) |
+| Cursos | 1 Basico A (id 1, profesor jefe 1), 2 Basico B (id 2, profesor jefe 2) |
+| Estudiantes | Juan Perez (id 1) y Ana Soto (id 2), ambos en el curso 1 |
+| Calificaciones | 3 notas que referencian a los estudiantes 1 y 2 en los cursos 1 y 2 |
+
+Prueba rapida: `GET http://localhost:8090/api/v1/cursos/1` devuelve el curso enriquecido con su profesora jefe y sus dos estudiantes.
 
 ---
 
@@ -292,6 +322,10 @@ git push origin funcionalidad/nombre-descriptivo
 6. **Dockerfiles con Maven Wrapper:** Se completo la migracion declarada anteriormente: los 12 Dockerfiles ahora usan `./mvnw` en lugar de instalar Maven via `apk`, conservando el mirror de Google.
 
 7. **Limpieza:** Logging del Gateway de `TRACE` a `info`, logging con SLF4J en `CursoService` (antes `System.err.println`), y eliminacion de archivos `fix*.patch` residuales.
+
+8. **Desarrollo local funcional (Opcion B):** Los `application.yml` base ahora apuntan a los puertos que docker-compose expone para cada BD (`localhost:3311-3320`); antes apuntaban a `localhost:3306`, por lo que el flujo documentado de correr un servicio local contra su BD dockerizada no conectaba.
+
+9. **Documentacion:** Se corrigio el endpoint de detalle de cursos (`GET /api/v1/cursos/{id}`, no `/{id}/detalle`), y se documentaron el selector de Swagger federado, el CORS global del Gateway, los perfiles base/docker y los datos de ejemplo (seeds).
 
 ### 2026-06-26 - Integracion de pruebas unitarias, YAML y comunicacion inter-servicio (Felipe Sepulveda)
 

@@ -2,7 +2,7 @@ spring:
   application:
     name: servicio-notificaciones
   datasource:
-    url: jdbc:mysql://localhost:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3319/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
