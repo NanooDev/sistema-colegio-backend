@@ -1,12 +1,16 @@
 spring:
   application:
     name: api-gateway
-  profiles:
-    active: ${APP_PROFILE:dev}
   cloud:
     gateway:
       server:
         webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
           default-filters:
             - PreserveHostHeader
           routes:
@@ -60,10 +64,80 @@ spring:
               predicates:
                 - Path=/api/v1/calificaciones/**
 
+            - id: estudiantes-api-docs
+              uri: lb://SERVICIO-ESTUDIANTES
+              predicates:
+                - Path=/v3/api-docs/estudiantes
+              filters:
+                - RewritePath=/v3/api-docs/estudiantes, /v3/api-docs
+
+            - id: profesores-api-docs
+              uri: lb://SERVICIO-PROFESORES
+              predicates:
+                - Path=/v3/api-docs/profesores
+              filters:
+                - RewritePath=/v3/api-docs/profesores, /v3/api-docs
+
+            - id: asistencias-api-docs
+              uri: lb://SERVICIO-ASISTENCIAS
+              predicates:
+                - Path=/v3/api-docs/asistencias
+              filters:
+                - RewritePath=/v3/api-docs/asistencias, /v3/api-docs
+
+            - id: cursos-api-docs
+              uri: lb://SERVICIO-CURSOS
+              predicates:
+                - Path=/v3/api-docs/cursos
+              filters:
+                - RewritePath=/v3/api-docs/cursos, /v3/api-docs
+
+            - id: asignaturas-api-docs
+              uri: lb://SERVICIO-ASIGNATURAS
+              predicates:
+                - Path=/v3/api-docs/asignaturas
+              filters:
+                - RewritePath=/v3/api-docs/asignaturas, /v3/api-docs
+
+            - id: matriculas-api-docs
+              uri: lb://SERVICIO-MATRICULAS
+              predicates:
+                - Path=/v3/api-docs/matriculas
+              filters:
+                - RewritePath=/v3/api-docs/matriculas, /v3/api-docs
+
+            - id: biblioteca-api-docs
+              uri: lb://SERVICIO-BIBLIOTECA
+              predicates:
+                - Path=/v3/api-docs/biblioteca
+              filters:
+                - RewritePath=/v3/api-docs/biblioteca, /v3/api-docs
+
+            - id: finanzas-api-docs
+              uri: lb://SERVICIO-FINANZAS
+              predicates:
+                - Path=/v3/api-docs/finanzas
+              filters:
+                - RewritePath=/v3/api-docs/finanzas, /v3/api-docs
+
+            - id: notificaciones-api-docs
+              uri: lb://SERVICIO-NOTIFICACIONES
+              predicates:
+                - Path=/v3/api-docs/notificaciones
+              filters:
+                - RewritePath=/v3/api-docs/notificaciones, /v3/api-docs
+
+            - id: calificaciones-api-docs
+              uri: lb://SERVICIO-CALIFICACIONES
+              predicates:
+                - Path=/v3/api-docs/calificaciones
+              filters:
+                - RewritePath=/v3/api-docs/calificaciones, /v3/api-docs
+
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://eureka:8761/eureka/}
+      defaultZone: http://localhost:8761/eureka/
 
 server:
   port: ${GATEWAY_PORT:8090}
@@ -80,12 +154,33 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /doc/swagger-ui.html
+    urls:
+      - name: estudiantes
+        url: /v3/api-docs/estudiantes
+      - name: profesores
+        url: /v3/api-docs/profesores
+      - name: asistencias
+        url: /v3/api-docs/asistencias
+      - name: cursos
+        url: /v3/api-docs/cursos
+      - name: asignaturas
+        url: /v3/api-docs/asignaturas
+      - name: matriculas
+        url: /v3/api-docs/matriculas
+      - name: biblioteca
+        url: /v3/api-docs/biblioteca
+      - name: finanzas
+        url: /v3/api-docs/finanzas
+      - name: notificaciones
+        url: /v3/api-docs/notificaciones
+      - name: calificaciones
+        url: /v3/api-docs/calificaciones
 
 logging:
   level:
     root: info
     com.duoc: info
-    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.gateway: info
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
@@ -95,3 +190,14 @@ logging:
     rollingpolicy:
       max-file-size: 10MB
       max-history: 7
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/

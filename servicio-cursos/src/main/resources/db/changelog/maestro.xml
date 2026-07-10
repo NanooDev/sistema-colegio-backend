@@ -6,5 +6,6 @@
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
     <include file="db/changelog/v1_crear_tabla_cursos.sql" relativeToChangelogFile="false"/>
+    <include file="db/changelog/v2_insertar_cursos.sql" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

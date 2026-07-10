@@ -57,7 +57,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://mysql-notificaciones:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql-servicio-notificaciones:3306/db_notificaciones?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
 
 eureka:
   client:

@@ -57,7 +57,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://mysql-profesores:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql-servicio-profesores:3306/db_profesores?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
 
 eureka:
   client:

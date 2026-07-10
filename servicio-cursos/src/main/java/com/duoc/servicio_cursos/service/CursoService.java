@@ -7,6 +7,8 @@ import com.duoc.servicio_cursos.entity.CursoEntity;
 import com.duoc.servicio_cursos.exception.CursoNotFoundException;
 import com.duoc.servicio_cursos.model.Curso;
 import com.duoc.servicio_cursos.repository.CursoEntityRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Service
 public class CursoService {
+
+    private static final Logger log = LoggerFactory.getLogger(CursoService.class);
 
     @Autowired
     private CursoEntityRepository cursoEntityRepository;
@@ -59,13 +63,13 @@ public class CursoService {
         try {
             curso.setProfesorJefe(profesorFeign.obtenerProfesorPorId(curso.getProfesorJefeId()));
         } catch (Exception e) {
-            System.err.println("No se pudo obtener el profesor: " + e.getMessage());
+            log.error("No se pudo obtener el profesor con ID {}: {}", curso.getProfesorJefeId(), e.getMessage());
         }
 
         try {
             curso.setEstudiantes(estudianteFeign.obtenerEstudiantesPorCurso(curso.getId()));
         } catch (Exception e) {
-            System.err.println("No se pudo obtener los estudiantes: " + e.getMessage());
+            log.error("No se pudo obtener los estudiantes del curso {}: {}", curso.getId(), e.getMessage());
         }
 
         return curso;

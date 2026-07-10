@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
-@FeignClient(name = "servicio-estudiantes", url = "${feign.estudiantes.url:http://localhost:8081/api/v1/estudiantes}")
+@FeignClient(name = "servicio-estudiantes", path = "/api/v1/estudiantes")
 public interface EstudianteFeign {
     @GetMapping("/curso/{cursoId}")
     List<EstudianteDTO> obtenerEstudiantesPorCurso(@PathVariable("cursoId") Long cursoId);

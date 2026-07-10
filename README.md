@@ -277,6 +277,22 @@ git push origin funcionalidad/nombre-descriptivo
 
 ## Historial de Cambios
 
+### 2026-07-10 - Alineacion con arquitectura de referencia y correcciones de despliegue (Felipe Sepulveda)
+
+1. **Feign via Eureka:** Se elimino el atributo `url` de los 7 `@FeignClient` (apuntaba a `localhost`, lo que rompia la comunicacion inter-servicio dentro de Docker). Ahora resuelven por nombre registrado en Eureka con `path` para el prefijo `/api/v1/...`, con load balancing incluido. Se elimino la configuracion `feign.*.url` de los application.yml.
+
+2. **CORS centralizado en el Gateway:** Se agrego `globalcors` en el API Gateway (origenes, metodos y headers abiertos). Ningun microservicio necesita `@CrossOrigin`.
+
+3. **Swagger agregado en el Gateway:** Se agregaron 10 rutas `/v3/api-docs/{servicio}` con `RewritePath` y el selector `springdoc.swagger-ui.urls`, para navegar la documentacion de los 10 microservicios desde `http://localhost:8090/doc/swagger-ui.html`.
+
+4. **Perfil `docker` funcional:** Se corrigieron los hostnames de BD del perfil docker (`mysql-X` -> `mysql-servicio-X`) en los 10 servicios, se agrego perfil docker al Gateway, y docker-compose ahora activa `SPRING_PROFILES_ACTIVE=docker` en lugar de duplicar la configuracion en variables de entorno (se eliminaron las env vars redundantes y las `SERVICIO_*_URL` sin uso).
+
+5. **Datos de ejemplo coherentes:** Se agregaron seeds Liquibase para profesores, cursos y estudiantes, alineados con los IDs que referencian los seeds de calificaciones, para que los endpoints `/detalle` funcionen apenas levanta el sistema.
+
+6. **Dockerfiles con Maven Wrapper:** Se completo la migracion declarada anteriormente: los 12 Dockerfiles ahora usan `./mvnw` en lugar de instalar Maven via `apk`, conservando el mirror de Google.
+
+7. **Limpieza:** Logging del Gateway de `TRACE` a `info`, logging con SLF4J en `CursoService` (antes `System.err.println`), y eliminacion de archivos `fix*.patch` residuales.
+
 ### 2026-06-26 - Integracion de pruebas unitarias, YAML y comunicacion inter-servicio (Felipe Sepulveda)
 
 Mejoras para cumplir con los requisitos de la Evaluacion Parcial 3:

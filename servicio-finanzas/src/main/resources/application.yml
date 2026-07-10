@@ -25,10 +25,6 @@ server:
       suffix: .log
       pattern: "%h %l %u %t \"%r\" %s %b %D"
 
-feign:
-  estudiantes:
-    url: http://localhost:8081/api/v1/estudiantes
-
 eureka:
   client:
     service-url:
@@ -61,7 +57,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://mysql-finanzas:3306/db_finanzas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysql-servicio-finanzas:3306/db_finanzas?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
 
 eureka:
   client:
