@@ -49,6 +49,11 @@ public class EstudianteService {
         Estudiante estudianteExistente = estudianteRepository.findById(id)
                 .orElseThrow(() -> new EstudianteNotFoundException(id));
 
+        if (!estudianteExistente.getRut().equals(request.getRut())
+                && estudianteRepository.existsByRut(request.getRut())) {
+            throw new EstudianteDuplicadoException(request.getRut());
+        }
+
         estudianteExistente.setRut(request.getRut());
         estudianteExistente.setNombre(request.getNombre());
         estudianteExistente.setApellido(request.getApellido());

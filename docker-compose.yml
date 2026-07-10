@@ -172,12 +172,19 @@ services:
       - "8761:8761"
     networks:
       - microservicios-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
     depends_on:
-      - eureka
+      eureka:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -193,7 +200,7 @@ services:
       mysql-servicio-estudiantes:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -208,7 +215,7 @@ services:
       mysql-servicio-profesores:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -223,7 +230,7 @@ services:
       mysql-servicio-asistencias:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -238,7 +245,7 @@ services:
       mysql-servicio-cursos:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -253,7 +260,7 @@ services:
       mysql-servicio-asignaturas:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -268,7 +275,7 @@ services:
       mysql-servicio-matriculas:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -283,7 +290,7 @@ services:
       mysql-servicio-biblioteca:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -298,7 +305,7 @@ services:
       mysql-servicio-finanzas:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -313,7 +320,7 @@ services:
       mysql-servicio-notificaciones:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:
@@ -328,7 +335,7 @@ services:
       mysql-servicio-calificaciones:
         condition: service_healthy
       eureka:
-        condition: service_started
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     ports:

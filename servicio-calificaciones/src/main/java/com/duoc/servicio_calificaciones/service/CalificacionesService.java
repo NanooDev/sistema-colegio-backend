@@ -33,8 +33,9 @@ public class CalificacionesService {
         calificacion.setNota1(request.getNota1());
         calificacion.setNota2(request.getNota2());
         calificacion.setNota3(request.getNota3());
-        calificacion.setNotaFinal(calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3()));
-        calificacion.setEstado(calcularEstado(calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3())));
+        Double notaFinal = calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3());
+        calificacion.setNotaFinal(notaFinal);
+        calificacion.setEstado(calcularEstado(notaFinal));
         calificacion.setFecha(request.getFecha());
 
         Calificacion saved = calificacionesRepository.save(calificacion);
@@ -74,8 +75,9 @@ public class CalificacionesService {
         calificacion.setNota1(request.getNota1());
         calificacion.setNota2(request.getNota2());
         calificacion.setNota3(request.getNota3());
-        calificacion.setNotaFinal(calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3()));
-        calificacion.setEstado(calcularEstado(calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3())));
+        Double notaFinal = calcularNotaFinal(request.getNota1(), request.getNota2(), request.getNota3());
+        calificacion.setNotaFinal(notaFinal);
+        calificacion.setEstado(calcularEstado(notaFinal));
         calificacion.setFecha(request.getFecha());
 
         Calificacion updated = calificacionesRepository.save(calificacion);
