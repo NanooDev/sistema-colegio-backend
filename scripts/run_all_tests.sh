@@ -4,7 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 modules=(
-  "$ROOT_DIR/base-biblioteca-salas/biblioteca.salas.duoc"
   "$ROOT_DIR/servicio-estudiantes"
   "$ROOT_DIR/servicio-profesores"
   "$ROOT_DIR/servicio-asignaturas"

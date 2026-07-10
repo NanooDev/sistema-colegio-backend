@@ -327,6 +327,8 @@ git push origin funcionalidad/nombre-descriptivo
 
 9. **Documentacion:** Se corrigio el endpoint de detalle de cursos (`GET /api/v1/cursos/{id}`, no `/{id}/detalle`), y se documentaron el selector de Swagger federado, el CORS global del Gateway, los perfiles base/docker y los datos de ejemplo (seeds).
 
+10. **Tooling y guia Windows:** Se elimino de `scripts/run_all_tests.sh` la referencia a un modulo inexistente (`base-biblioteca-salas`) que abortaba el script, y se reescribio `README-WINDOWS.md` (instrucciones antiguas: pedia Maven instalado, BD en puerto 3306 y compose dentro de servicio-estudiantes). Verificadas las 10 suites de tests: 182 tests, 0 fallos.
+
 ### 2026-06-26 - Integracion de pruebas unitarias, YAML y comunicacion inter-servicio (Felipe Sepulveda)
 
 Mejoras para cumplir con los requisitos de la Evaluacion Parcial 3:
